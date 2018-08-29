@@ -39,6 +39,7 @@ public class IpBroadcast extends Thread{
 
             while(working) {
                 socket.send(packet);
+                Thread.sleep(500);
             }
 
             socket.close();

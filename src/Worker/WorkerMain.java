@@ -2,19 +2,24 @@ package Worker;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
+import java.net.*;
 
 public class WorkerMain {
-    private static String serverIp = "";
+    private String serverIp = "";
+    private Socket socket;
+    private final int port = 1948;
 
     public static void main(String[] args) throws IOException
     {
+        WorkerMain worker = new WorkerMain();
+        worker.start();
     }
 
-    public static void helper() throws  Exception{
+    /**
+     * waits for broadcast from the master which tells his ip
+     * @throws IOException
+     */
+    public void catchMasterIp() throws IOException{
         DatagramSocket socket = new DatagramSocket(1861);
 
         byte[] buf = new byte[1024];
@@ -26,7 +31,21 @@ public class WorkerMain {
         serverIp = new String(packet.getData());
 
         socket.close();
-        System.out.println("Server ip is "+serverIp);
+        System.out.println("Master ip is "+serverIp);
+    }
+
+    public void establishTcpIpCommunications() throws IOException{
+        socket = new Socket(serverIp, port);
+        System.out.println("establised communication !");
+    }
+
+    /**
+     * main of the worker
+     * @throws IOException using sockets
+     */
+    public void start() throws IOException{
+        catchMasterIp();
+        establishTcpIpCommunications();
     }
 
 }
