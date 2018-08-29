@@ -43,8 +43,10 @@ public class MasterDThread <T extends MasterDThread>{
     /**
      * clean the program after the end, like finalized
      */
-    private void endRun(){
+    private void endRun()
+    {
         broadcast.kill();
+        masterSocket.kill();
     }
 
     /**

@@ -5,6 +5,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+/**
+ * singalton responsible from communication with the workers
+ */
 public final class MasterSocket extends Thread{
     private Thread thread;
     private String name = "MasterSocket";
@@ -42,6 +45,9 @@ public final class MasterSocket extends Thread{
         //TODO
     }
 
+    /**
+     * function main
+     */
     @Override
     public void run() {
         try {
@@ -61,6 +67,9 @@ public final class MasterSocket extends Thread{
         }
     }
 
+    /**
+     * ends the while loop
+     */
     public void kill(){
         working = false;
     }
