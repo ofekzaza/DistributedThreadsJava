@@ -9,21 +9,26 @@ import java.util.ArrayList;
 public class MasterDThread <T extends MasterDThread>{
     private IpBroadcast broadcast;
     private final int broadcastPort = 1861; // dont change
-    private String name;
+   // private String name;
     private T child;
     private MasterSocket masterSocket;
 
     public static void main(String[] args) throws  Exception{
     }
 
+    @Deprecated
+    public MasterDThread(){
+
+    }
+
     /**
      * constructor
      * @param child extends self, the class the calls the library
-     * @param name the name of the current master
+     //* @param name the name of the current master
      */
-    public MasterDThread(T child, String name){
+    public MasterDThread(T child){
         this.child = child;
-        this.name = name;
+       // this.name = name;
     }
 
     //function for the child
@@ -45,6 +50,7 @@ public class MasterDThread <T extends MasterDThread>{
      */
     private void endRun()
     {
+        System.out.println("the dthread is closing");
         broadcast.kill();
         masterSocket.kill();
     }
@@ -66,6 +72,8 @@ public class MasterDThread <T extends MasterDThread>{
         startTcpWorkerConnection();
 
         child.run();
+
+        masterSocket.waitForResults();
 
         endRun();
     }

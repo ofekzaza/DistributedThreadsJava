@@ -51,20 +51,29 @@ public final class MasterSocket extends Thread{
     @Override
     public void run() {
         try {
+            sockets.add(serverSocket.accept());
+            System.out.println("got connection");
+            startCommunication();
+
             while (working) {
                 sockets.add(serverSocket.accept());
-                System.out.println("got connection");
-                if(sockets.size() == 1){
-                    startCommunication();
-                }
             }
+
             //TODO, close workers
             for(int i = 0;i < sockets.size(); i++)
                 sockets.get(i).close();
+
             serverSocket.close();
         }catch (IOException x){
             x.printStackTrace();
         }
+        System.out.println("master socket is dead");
+    }
+
+    public void waitForResults() {
+        try {
+            Thread.sleep(5000);
+        }catch (Exception x){}
     }
 
     /**
@@ -72,6 +81,12 @@ public final class MasterSocket extends Thread{
      */
     public void kill(){
         working = false;
+        try{
+            for(int i = 0;i < sockets.size(); i++)
+                sockets.get(i).close();
+        }catch (IOException x){
+            x.printStackTrace();
+        }
     }
 
     public void start(){
