@@ -57,11 +57,12 @@ public final class MasterSocket extends Thread{
 
             while (working) {
                 sockets.add(serverSocket.accept());
+                workers.add(new Worker(sockets.size()-1, sockets.get(sockets.size()-1)));
             }
 
             //TODO, close workers
-            for(int i = 0;i < sockets.size(); i++)
-                sockets.get(i).close();
+            for(int i = 0;i < workers.size(); i++)
+                workers.get(i).kill();
 
             serverSocket.close();
         }catch (IOException x){
@@ -83,7 +84,7 @@ public final class MasterSocket extends Thread{
         working = false;
         try{
             for(int i = 0;i < sockets.size(); i++)
-                sockets.get(i).close();
+                workers.get(i).kill();
         }catch (IOException x){
             x.printStackTrace();
         }

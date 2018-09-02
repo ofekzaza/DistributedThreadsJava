@@ -7,16 +7,14 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Worker extends Thread{
+public class Worker{
     private Socket socket;
     private OutputStream outputStream;
     private PrintStream printSteam;
     private InputStream inputStream;
     private Scanner scan;
-    private Thread thread;
     private String name;
     private int id;
-    private boolean needToSend;
     private String message;
     private boolean active;
     private boolean working;
@@ -26,7 +24,6 @@ public class Worker extends Thread{
         working = true;
         active = false;
         this.id = id;
-        needToSend = false;
         this.name = "Worker"+id;
         outputStream = socket.getOutputStream();
         inputStream = socket.getInputStream();
@@ -34,53 +31,29 @@ public class Worker extends Thread{
         scan = new Scanner(inputStream);
     }
 
-    @Override
-    public void run(){
-        while(working) {
-            while (!scan.hasNext() && !needToSend) {
-                if(!working)
-                    break;
-            }
-
-            if (needToSend) {
-                printSteam.println(message);
-                printSteam.flush();
-                needToSend = false;
-            }
-
-            if (scan.hasNext()) {
-                String input = scan.next();
-
-                //close the worker becouse for some resune the worker is dead
-                if (input == "kill") {
-                    try{
-                        kill();
-                    }catch (IOException x){
-                        x.printStackTrace();
-                    }
-                }
-                else if (checkAnswer(input)) {
-                    answer = input.substring(6);
-                }
-                //TODO other communication from the worker to the master
-            }
-        }
-    }
-
     /**
      * send message to the worker
      * @param str the url of the jar file
      */
-    public void sendMessage(String str){
+    public void send(String str){
         //TODO
-        needToSend = true;
     }
 
     /**
      *
      * @return the answer of the worker to the master
      */
-    public String getAnswer(){
+    public String getInput() throws IOException{
+        if(scan.hasNext()){
+            String str = scan.next();
+            if(str == "kill"){
+                kill();
+                answer = null;
+            }
+            if(checkAnswer(str)){
+                answer = str.substring(6);
+            }
+        }
         if(answer == null)
             return "";
         return answer;
