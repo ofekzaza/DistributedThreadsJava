@@ -1,0 +1,19 @@
+import
+        java.io.FileOutputStream;
+public
+class
+maybe
+{
+    public
+    static
+    void
+    main(String[]
+                 args)
+            throws
+            Exception{
+        FileOutputStream
+                file
+                =
+                new
+                        FileOutputStream("D:/file.txt");
+    }}
