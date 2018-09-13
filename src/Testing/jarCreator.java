@@ -15,25 +15,26 @@ public class jarCreator {
         //prepare Manifest file
         String version = "1.0.0";
         String author = "me";
-        String main = "src/Testing/test.java";
+        String main = "testJar"; // main of the class
         Manifest manifest = new Manifest();
         Attributes global = manifest.getMainAttributes();
         global.put(Attributes.Name.MANIFEST_VERSION, version);
         global.put(new Attributes.Name("Created-By"), author);
         global.put(Attributes.Name.MAIN_CLASS, main);
+        //global.replace(Attributes.Name.MAIN_CLASS, main)
 
         //create required jar name
-        String jarFileName ="testJar.jar";
+        String jarFileName ="testingJar.jar";
         JarOutputStream jos = null;
-            File jarFile = new File(jarFileName);
-            jarFile.delete();
-            jarFile = new File(jarFileName);
-            OutputStream os = new FileOutputStream(jarFile);
-            jos = new JarOutputStream(os, manifest);
+        File jarFile = new File(jarFileName);
+        jarFile.delete();
+        jarFile = new File(jarFileName);
+        OutputStream os = new FileOutputStream(jarFile);
+        jos = new JarOutputStream(os, manifest);
 
         //Collect all file and class names to iterate
         List<String> fileList = new ArrayList<String>();
-        String rootLocation ="";
+        String rootLocation ="D://ComputerWork/DistributedThreadsJava/";
         fileList.add("src/Testing/testJar.java");
         //fileList.add("javax/swing/BoxBeanInfo.class");
       //  fileList.add("javax/swing/text/JTextComponentBeanInfo.class");
@@ -43,7 +44,7 @@ public class jarCreator {
         byte[] buffer = new byte[1024];
         for(String file : fileList ){
             //create JarEntry
-            JarEntry je = new JarEntry("src/Testing/testJar.class");
+            JarEntry je = new JarEntry("testJar");
             je.setComment("Creating Jar");
             je.setTime(Calendar.getInstance().getTimeInMillis());
             System.out.println(je);
