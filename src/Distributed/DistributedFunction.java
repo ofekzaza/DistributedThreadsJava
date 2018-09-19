@@ -39,7 +39,7 @@ public class DistributedFunction {
      */
     public DistributedFunction(DistributedFunction child){
         try {
-            fileInputName = "Worker/input.txt";
+            fileInputName = "src/Worker/input.txt";
             this.child = child;
             inputStream = new FileInputStream(fileInputName);
             dataInputStream = new DataInputStream(inputStream);
