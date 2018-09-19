@@ -11,6 +11,7 @@ public class MasterDThread <T extends MasterDThread>{
     private final int broadcastPort = 1861; // dont change
    // private String name;
     private T child;
+    private String[] fileList;
     private MasterSocket masterSocket;
 
     public static void main(String[] args) throws  Exception{
@@ -24,10 +25,12 @@ public class MasterDThread <T extends MasterDThread>{
     /**
      * constructor
      * @param child extends self, the class the calls the library
+     * @param files the name of the files from Distributed Packege you wish to work with.
      //* @param name the name of the current master
      */
-    public MasterDThread(T child){
+    public MasterDThread(T child, String ... files){
         this.child = child;
+        this.fileList = files;
        // this.name = name;
     }
 
@@ -71,9 +74,11 @@ public class MasterDThread <T extends MasterDThread>{
         startBroadcast();
         startTcpWorkerConnection();
 
+
+
         child.run();
 
-        masterSocket.waitForResults();
+       // masterSocket.waitForResults();
 
         endRun();
     }

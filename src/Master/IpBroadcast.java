@@ -13,13 +13,20 @@ public class IpBroadcast extends Thread{
     private boolean working = true;
     private int port = 1861;
 
-    public IpBroadcast(int port){
-        this.port = port;
-    }
-
     public IpBroadcast(){
 
     }
+
+    public IpBroadcast(int port){
+
+    }
+
+
+    public static void main(String[] args){
+        IpBroadcast broadcast = new IpBroadcast();
+        broadcast.start();
+    }
+
 
     @Override
     public void run() {

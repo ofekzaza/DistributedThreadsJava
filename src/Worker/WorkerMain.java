@@ -34,9 +34,36 @@ public class WorkerMain {
         System.out.println("Master ip is "+serverIp);
     }
 
+    /**
+     * creats tcp io communication with the master
+     * @throws IOException
+     */
     public void establishTcpIpCommunications() throws IOException{
-        socket = new Socket(serverIp, port);
+        boolean trying = true;
+        while(trying) {
+            try{
+                socket = new Socket(serverIp, port);
+                trying = false;
+            }catch (Exception x){
+                trying = true;
+            }
+        }
         System.out.println("establised communication !");
+    }
+
+    /**
+     * this method waits for input from the user;
+     */
+    public boolean waitForInput(){
+        return false;
+    }
+
+    public void execute(){
+
+    }
+
+    public void returnAnswer(){
+
     }
 
     /**
@@ -46,6 +73,11 @@ public class WorkerMain {
     public void start() throws IOException{
         catchMasterIp();
         establishTcpIpCommunications();
+        while(waitForInput()){
+            execute();
+            returnAnswer();
+        }
+        System.out.println("worker is dead");
     }
 
 }

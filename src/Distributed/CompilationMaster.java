@@ -38,7 +38,7 @@ public class CompilationMaster {
      * @param root the root of the files
      * @param names the names of the files
      */
-    public void addFiles(String root, String...names){
+    public void addFiles(String root, String... names){
         for(int i = 0; i < names.length; i++){
             addFile(root, names[i]);
         }

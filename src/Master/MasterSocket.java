@@ -17,6 +17,7 @@ public final class MasterSocket extends Thread{
     private boolean working;
     public ArrayList<Socket> sockets;
     private ArrayList<Worker> workers;
+    public static String[] JsonNames = {"Ints", "Doubles", "Booleans", "Strings"};
 
     private MasterSocket(){
         try {

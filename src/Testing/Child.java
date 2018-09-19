@@ -1,17 +1,19 @@
 package Testing;
 
 import Master.MasterDThread;
+import Master.Worker;
 
 public class Child extends MasterDThread {
-    MasterDThread master;
+    private MasterDThread master;
+    private String[] fileList;
 
     public static void main(String[] args){
         Child child = new Child();
         child.start();
     }
 
-    public Child(){
-
+    public Child(String ... files){
+        fileList = files;
     }
 
     @Override
@@ -22,7 +24,7 @@ public class Child extends MasterDThread {
     @Override
     public void start(){
         if(master == null){
-            master = new MasterDThread(this);
+            master = new MasterDThread(this, fileList);
             master.start();
         }
     }
