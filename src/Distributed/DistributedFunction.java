@@ -1,6 +1,5 @@
 package Distributed;
 
-import Master.MasterSocket;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,7 +23,7 @@ public class DistributedFunction {
     private boolean[] booleans;
 
     /**
-     * default constructor
+     * default constructor for child
      */
     @Deprecated
     public DistributedFunction(){
@@ -49,19 +48,23 @@ public class DistributedFunction {
                 input += scanner.next();
             }
             jsonObject = new JSONObject(input);
-            JSONArray array = jsonObject.getJSONArray(MasterSocket.JsonNames[0]);
+            JSONArray array = jsonObject.getJSONArray("Ints");
+            ints = new int[array.length()];
             for (int i = 0; i < array.length(); i++) {
                 ints[i] = array.getInt(i);
             }
-            array = jsonObject.getJSONArray(MasterSocket.JsonNames[1]);
+            array = jsonObject.getJSONArray("Doubles");
+            doubles = new double[array.length()];
             for (int i = 0; i < array.length(); i++) {
                 doubles[i] = array.getDouble(i);
             }
-            array = jsonObject.getJSONArray(MasterSocket.JsonNames[2]);
+            array = jsonObject.getJSONArray("Booleans");
+            booleans = new boolean[array.length()];
             for (int i = 0; i < array.length(); i++) {
                 booleans[i] = array.getBoolean(i);
             }
-            array = jsonObject.getJSONArray(MasterSocket.JsonNames[3]);
+            array = jsonObject.getJSONArray("Strings");
+            strings = new String[array.length()];
             for (int i = 0; i < array.length(); i++) {
                 strings[i] = array.getString(i);
             }
@@ -77,9 +80,6 @@ public class DistributedFunction {
      * a main is needed in the son
      * @param args defualt values get from the compiler
      */
-    public static void main(String[] args){
-
-    }
 
     /**
      * the main of the class file
