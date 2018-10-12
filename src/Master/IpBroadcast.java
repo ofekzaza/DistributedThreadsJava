@@ -21,13 +21,6 @@ public class IpBroadcast extends Thread{
 
     }
 
-
-    public static void main(String[] args){
-        IpBroadcast broadcast = new IpBroadcast();
-        broadcast.start();
-    }
-
-
     @Override
     public void run() {
         try {

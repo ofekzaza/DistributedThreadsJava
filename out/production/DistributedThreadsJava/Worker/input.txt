@@ -1,1 +1,1 @@
-{"Doubles":[],"Ints":[],"Booleans":[],"Strings":["GOOD"]}
+{"Doubles":[],"Ints":[],"Booleans":[],"Strings":[]}

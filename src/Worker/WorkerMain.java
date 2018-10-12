@@ -1,7 +1,8 @@
 package Worker;
 
+import GsonInformation.Gsons;
+import com.google.gson.Gson;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.*;
 import java.net.DatagramPacket;
@@ -12,17 +13,19 @@ import java.util.Scanner;
 public class WorkerMain {
     private String serverIp = "";
     private Socket socket;
-    private InputStream inputStream;
+    private DataInputStream inputStream;
     private Scanner scanSocket;
-    private OutputStream outputStream;
+    private DataOutputStream outputStream;
     private PrintStream printStream;
     private final int port = 1948;
     private FileOutputStream classFileOutputStream;
     private FileOutputStream inputFileOutputStream;
     private FileInputStream answerFileInputStream;
+    private BufferedInputStream dataInputStream;
     private FileOutputStream answerFileOutputStream;
     private Scanner answerFileScanner;
-    private JSONObject jsonObject;
+    private Gsons.Packet jsonInput;
+    private Gson gson;
     private Runtime runtime;
 
     public static void main(String[] args) throws IOException, JSONException, InterruptedException {
@@ -36,6 +39,7 @@ public class WorkerMain {
      * @throws IOException
      */
     public WorkerMain() throws IOException{
+        Gson gson = Gsons.gson;
         inputFileOutputStream = new FileOutputStream("src/Worker/input.txt");
         answerFileInputStream = new FileInputStream("src/Worker/answer.txt");
         answerFileScanner = new Scanner(answerFileInputStream);
@@ -48,12 +52,12 @@ public class WorkerMain {
      * @throws IOException
      */
     public void catchMasterIp() throws IOException{
-        DatagramSocket socket = new DatagramSocket(1861);
+        DatagramSocket dataSocket = new DatagramSocket(1861);
         byte[] buf = new byte[1024];
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
-        socket.receive(packet);
+        dataSocket.receive(packet);
         serverIp = new String(packet.getData());
-        socket.close();
+        dataSocket.close();
         System.out.println("Master ip is "+serverIp);
     }
 
@@ -65,27 +69,50 @@ public class WorkerMain {
         boolean trying = true;
         while(trying) {
             try{
+                System.out.println("trying to establish communications");
                 socket = new Socket(serverIp, port);
                 trying = false;
             }catch (Exception x){
                 trying = true;
             }
         }
-        inputStream = socket.getInputStream();
-        outputStream = socket.getOutputStream();
-        scanSocket = new Scanner(inputStream);
-        printStream = new PrintStream(outputStream);
+        dataInputStream = new BufferedInputStream(socket.getInputStream());
+        scanSocket = new Scanner(dataInputStream);
+        printStream = new PrintStream(socket.getOutputStream());
         System.out.println("establised communication !");
     }
 
     /**
      * this method waits for input from the user;
      */
-    public boolean waitForInput() throws JSONException{
+    public boolean waitForInput() throws IOException{
+        System.out.println("whaat???");
+        String str = "";
+
         while(!scanSocket.hasNext()){}
-        jsonObject = new JSONObject(scanSocket.next());
+
+        System.out.println("are you killing me?");
+        str += scanSocket.nextLine();
+
+       // while(scanSocket.hasNextLine()){
+         //   str += scanSocket.nextLine();
+        //}
+
+        System.out.println("wtf");
+        System.out.println(str);
         System.out.println("have input from the master");
-        return jsonObject.getBoolean("Working");
+
+        jsonInput = Gsons.JSON_CACHE_PARSER.fromJson(str);
+
+
+
+        System.out.println("wait for input is done "+ jsonInput.alive );
+        return jsonInput.alive;
+    }
+
+    public boolean test(){
+        System.out.println("maybe ");
+        return scanSocket.hasNext();
     }
 
     /**
@@ -93,18 +120,23 @@ public class WorkerMain {
      * @throws JSONException
      * @throws IOException
      */
-    public void writeInput() throws JSONException, IOException{
-        classFileOutputStream = new FileOutputStream("src/Distributed/"+jsonObject.getString("Name")+".class");
-        classFileOutputStream.write(jsonObject.getString("ClassFile").getBytes());
-        inputFileOutputStream.write(jsonObject.getJSONObject("Input").toString().getBytes());
+    public void writeInput() throws JSONException, IOException, InterruptedException{
+        classFileOutputStream = new FileOutputStream("src/Distributed/"+jsonInput.name+".java");
+        System.out.println("well");
+        classFileOutputStream.write(jsonInput.code.getBytes());
+        System.out.println(jsonInput.code);
+        Process p = runtime.exec("javac -cp java-json.jar;src src/Distributed/"+jsonInput.name+".java");
+        p.waitFor();
+        System.out.println("good");
+        inputFileOutputStream.write(jsonInput.information.getBytes());
         System.out.println("Wrote the input");
     }
 
     /**
      * excute the class file
      */
-    public void execute() throws InterruptedException, JSONException, IOException{
-        Process e = runtime.exec("java -cp src Distributed."+jsonObject.getString("Name").replace("/", "."));
+    public void execute() throws InterruptedException, IOException{
+        Process e = runtime.exec("java -cp java-json.jar;src Distributed."+jsonInput.name.replace("/", "."));
         e.waitFor();
         System.out.println("finished executing the class file");
     }
@@ -113,7 +145,12 @@ public class WorkerMain {
      * read the answer from the answer file and send the answer back to the master
      */
     public void returnAnswer()throws IOException{
-        printStream.print(answerFileScanner.next());
+        String str = "";
+        while(answerFileScanner.hasNext()){
+            str +=answerFileScanner.next();
+        }
+        printStream.println(str);
+        printStream.flush();
         if(false) {
             answerFileOutputStream.write("".getBytes());
             inputFileOutputStream.write("".getBytes());
@@ -133,9 +170,10 @@ public class WorkerMain {
         classFileOutputStream.close();
         scanSocket.close();
         printStream.close();
-        inputStream.close();
-        outputStream.close();
-        socket.close();
+        //inputStream.close();
+        //outputStream.close();
+        scanSocket.close();
+        printStream.close();
     }
     /**
      * main of the worker
@@ -145,9 +183,13 @@ public class WorkerMain {
         catchMasterIp();
         establishTcpIpCommunications();
         while(waitForInput()){
+            System.out.println("started the loop");
             writeInput();
+            System.out.println("wrote the input");
             execute();
+            System.out.println("finish executing");
             returnAnswer();
+            System.out.println("returned the output");
         }
         destructor();
         System.out.println("worker is dead");

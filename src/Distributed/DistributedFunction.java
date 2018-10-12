@@ -25,7 +25,6 @@ public class DistributedFunction {
     /**
      * default constructor for child
      */
-    @Deprecated
     public DistributedFunction(){
 
     }
