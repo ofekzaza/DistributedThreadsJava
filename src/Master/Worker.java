@@ -1,42 +1,40 @@
 package Master;
 
+import GsonInformation.Gsons;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
 
 public class Worker{
     private Socket socket;
-    private OutputStream outputStream;
     private PrintStream printSteam;
-    private InputStream inputStream;
     private Scanner scan;
-    private String name;
     private int id;
-    private String message;
     private boolean active;
     private boolean working;
     private String answer;
+    private String name;
 
     public Worker(int id, Socket socket) throws IOException {
         working = true;
         active = false;
         this.id = id;
         this.name = "Worker"+id;
-        outputStream = socket.getOutputStream();
-        inputStream = socket.getInputStream();
-        printSteam = new PrintStream(outputStream);
-        scan = new Scanner(inputStream);
+        printSteam = new PrintStream(socket.getOutputStream());
+        scan = new Scanner(socket.getInputStream());
     }
 
     /**
      * send message to the worker
-     * @param str the url of the jar file
+     * @param packet the url of the jar file
      */
-    public void send(String str){
-        //TODO
+    public void send(Gsons.Packet packet){
+        active = true;
+        name = packet.name;
+        printSteam.println(Gsons.gson.toJson(packet));
+        printSteam.flush();
     }
 
     /**
@@ -44,28 +42,27 @@ public class Worker{
      * @return the answer of the worker to the master
      */
     public String getInput() throws IOException{
-        if(scan.hasNext()){
-            String str = scan.next();
+        if(scan.hasNextLine()){
+            String str = scan.nextLine();
             if(str == "kill"){
-                kill();
+                close();
                 answer = null;
             }
             if(checkAnswer(str)){
-                answer = str.substring(6);
+                active = false;
+                return str;
             }
         }
-        if(answer == null)
-            return "";
-        return answer;
-    }
+        active = false;
+        return "Null";
+}
 
     /**
      * @param input from the worker
      * @return if the input contains the answer
      */
     private boolean checkAnswer(String input){
-        String help = input.substring(0,6);
-        return help.toLowerCase() == "answer";
+        return input != "kill";
     }
 
     /**
@@ -83,16 +80,15 @@ public class Worker{
     }
 
     /**
-     * this function close the worker
+     * this function close the worker and tells the worker to close itself
      * @throws IOException closing socket
      */
-    public void kill() throws  IOException{
+    public void close() throws  IOException{
+        send(new Gsons.Packet(false, "", "", "", ""));
         working = false;
-        active = true;
+        active = false;
         scan.close();
-        inputStream.close();
         printSteam.close();
-        outputStream.close();
         socket.close();
     }
 

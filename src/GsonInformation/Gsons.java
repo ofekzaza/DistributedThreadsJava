@@ -11,17 +11,19 @@ public class Gsons {
         public boolean alive;
         public String code;
         public String name;
+        public String dependencies;
 
-        public Packet(boolean a, String c, String n, String i){
-            information = i;
-            alive = a;
-            code = c;
-            name = n;
+        public Packet(boolean Alive, String Code, String Name, String Information, String dependencies){
+            information = Information;
+            alive = Alive;
+            code = Code;
+            name = Name;
+            this.dependencies = dependencies;
         }
 
         @Override
         public String toString(){
-            return "Name: "+name+", Code: "+code+ ", Alive: "+alive+", information: "+information;
+            return "Name: "+name+", Code: "+code+ ", Alive: "+alive+", information: "+information+", dependencies: "+dependencies;
         }
     }
 

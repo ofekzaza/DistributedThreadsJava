@@ -125,7 +125,7 @@ public class WorkerMain {
         System.out.println("well");
         classFileOutputStream.write(jsonInput.code.getBytes());
         System.out.println(jsonInput.code);
-        Process p = runtime.exec("javac -cp java-json.jar;src src/Distributed/"+jsonInput.name+".java");
+        Process p = runtime.exec("javac -cp "+jsonInput.dependencies+"java-json.jar;src src/Distributed/"+jsonInput.name+".java");
         p.waitFor();
         System.out.println("good");
         inputFileOutputStream.write(jsonInput.information.getBytes());
@@ -136,7 +136,7 @@ public class WorkerMain {
      * excute the class file
      */
     public void execute() throws InterruptedException, IOException{
-        Process e = runtime.exec("java -cp java-json.jar;src Distributed."+jsonInput.name.replace("/", "."));
+        Process e = runtime.exec("java -cp "+jsonInput.dependencies+"java-json.jar;src Distributed."+jsonInput.name.replace("/", "."));
         e.waitFor();
         System.out.println("finished executing the class file");
     }
@@ -152,17 +152,24 @@ public class WorkerMain {
         printStream.println(str);
         printStream.flush();
         if(false) {
-            answerFileOutputStream.write("".getBytes());
-            inputFileOutputStream.write("".getBytes());
-            classFileOutputStream.write("".getBytes());
+
         }
         System.out.println("sended the answer to the master");
     }
 
     /**
+     * sending death message and closing everything
      * close the IO connections
      */
     public void destructor() throws IOException {
+        //sends death message
+        printStream.println("kill");
+        printStream.flush();
+        //clean space
+        answerFileOutputStream.write("".getBytes());
+        inputFileOutputStream.write("".getBytes());
+        classFileOutputStream.write("".getBytes());
+        //close io connections
         answerFileScanner.close();
         answerFileOutputStream.close();
         answerFileInputStream.close();
@@ -170,10 +177,7 @@ public class WorkerMain {
         classFileOutputStream.close();
         scanSocket.close();
         printStream.close();
-        //inputStream.close();
-        //outputStream.close();
-        scanSocket.close();
-        printStream.close();
+        socket.close();
     }
     /**
      * main of the worker

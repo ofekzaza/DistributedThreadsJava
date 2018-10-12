@@ -9,7 +9,6 @@ import java.util.ArrayList;
 public class MasterDThread <T extends MasterDThread>{
     private IpBroadcast broadcast;
     private final int broadcastPort = 1861; // dont change
-   // private String name;
     private T child;
     private String[] fileList;
     private MasterSocket masterSocket;
@@ -31,7 +30,6 @@ public class MasterDThread <T extends MasterDThread>{
     public MasterDThread(T child, String ... files){
         this.child = child;
         this.fileList = files;
-       // this.name = name;
     }
 
     //function for the child
@@ -55,7 +53,7 @@ public class MasterDThread <T extends MasterDThread>{
     {
         System.out.println("the dthread is closing");
         broadcast.kill();
-        masterSocket.kill();
+        masterSocket.close();
     }
 
     /**
@@ -64,7 +62,33 @@ public class MasterDThread <T extends MasterDThread>{
     private void startTcpWorkerConnection(){
         masterSocket = masterSocket.init();
         masterSocket.start();
+    }
 
+    /**
+     * block the thread until all workers return an answer
+     */
+    public void waitForResults(){
+        masterSocket.waitForResults();
+    }
+
+    /**
+     * make a worker executes the java file name
+     * @param name the java code file
+     * @param dependencies the dependencies of the code, dont use
+     * @param params the input of the code
+     */
+    public void execute(String name, String dependencies, String... params){
+        masterSocket.giveMission(name, dependencies, params);
+    }
+
+    /**
+     *
+     * @param name the name of the code java file
+     * @return the string result or "" if there is no result or there is no result
+     * @throws IOException
+     */
+    public String getAnswer(String name) throws IOException{
+        return masterSocket.getAnswer(name);
     }
 
     /**
@@ -73,9 +97,6 @@ public class MasterDThread <T extends MasterDThread>{
     public void start(){
         startBroadcast();
         startTcpWorkerConnection();
-
-
-
         child.run();
 
        // masterSocket.waitForResults();

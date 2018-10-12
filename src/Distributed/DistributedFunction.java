@@ -47,22 +47,7 @@ public class DistributedFunction {
                 input += scanner.next();
             }
             jsonObject = new JSONObject(input);
-            JSONArray array = jsonObject.getJSONArray("Ints");
-            ints = new int[array.length()];
-            for (int i = 0; i < array.length(); i++) {
-                ints[i] = array.getInt(i);
-            }
-            array = jsonObject.getJSONArray("Doubles");
-            doubles = new double[array.length()];
-            for (int i = 0; i < array.length(); i++) {
-                doubles[i] = array.getDouble(i);
-            }
-            array = jsonObject.getJSONArray("Booleans");
-            booleans = new boolean[array.length()];
-            for (int i = 0; i < array.length(); i++) {
-                booleans[i] = array.getBoolean(i);
-            }
-            array = jsonObject.getJSONArray("Strings");
+            JSONArray array = jsonObject.getJSONArray("Strings");
             strings = new String[array.length()];
             for (int i = 0; i < array.length(); i++) {
                 strings[i] = array.getString(i);
@@ -86,7 +71,7 @@ public class DistributedFunction {
     public void start(){
         try {
             FileOutputStream outputStream = new FileOutputStream("src/Worker/answer.txt");
-            outputStream.write(child.execute(ints, doubles, booleans, strings).getBytes());
+            outputStream.write(child.execute(strings).getBytes());
             outputStream.close();
         }catch (Exception x){
             x.printStackTrace();
@@ -95,13 +80,10 @@ public class DistributedFunction {
 
     /**
      * the function which the user writes
-     * @param ints int inputs
-     * @param doubles double inputs
-     * @param booleans boolean inputs
      * @param strings string inputs
      * @return String - string can be anything if its managed the right way.
      */
-    public String execute(int[] ints, double[] doubles, boolean[] booleans, String[] strings){
+    public String execute(String[] strings){
         return "";
     }
 }
