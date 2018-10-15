@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -14,7 +15,7 @@ import java.util.*;
 /**
  * singalton responsible from communication with the workers
  */
-public final class MasterSocket extends Thread{
+public final class MasterSocket extends Thread {
     private Thread thread;
     private String name = "MasterSocket";
     private final static MasterSocket instance = new MasterSocket();
@@ -32,12 +33,13 @@ public final class MasterSocket extends Thread{
     private boolean connection;
     private int lastBusy;
     private HashMap<String, Worker> workersMap;
+    private FileInputStream fileReader;
 
-    private MasterSocket(){
+    private MasterSocket() {
         connection = false;
         try {
             serverSocket = new ServerSocket(port);
-        }catch (IOException x){
+        } catch (IOException x) {
             x.printStackTrace();
         }
         lastBusy = 0;
@@ -52,14 +54,14 @@ public final class MasterSocket extends Thread{
         System.out.println("Good at least");
     }
 
-   // public static void main(String[] args){
-     //   MasterSocket socket = MasterSocket.init();
-       // socket.run();
-     //   while(socket.sockets.size() == 0){}
-       // socket.kill();
+    // public static void main(String[] args){
+    //   MasterSocket socket = MasterSocket.init();
+    // socket.run();
+    //   while(socket.sockets.size() == 0){}
+    // socket.kill();
     //}
 
-    public static MasterSocket init(){
+    public static MasterSocket init() {
         return instance;
     }
 
@@ -71,7 +73,7 @@ public final class MasterSocket extends Thread{
         try {
             //wait to get the first connection
             sockets.add(serverSocket.accept());
-            workers.add(new Worker(sockets.size()-1, sockets.get(sockets.size()-1)));
+            workers.add(new Worker(sockets.size() - 1, sockets.get(sockets.size() - 1)));
             System.out.println("got connection");
             connection = true;
 
@@ -80,54 +82,58 @@ public final class MasterSocket extends Thread{
 
             while (working) {
 
-                if(nameQ.size() > 0){
+                if (nameQ.size() > 0) {
                     String code = "";
-                    scanner = new Scanner("src/Distributed/"+nameQ.peek()+".java");
-                    while(scanner.hasNextLine())
-                        code+=scanner.nextLine();
+                    fileReader = new FileInputStream("src/Distributed/" + nameQ.peek() + ".java");
+                    scanner = new Scanner(fileReader);
+                    while (scanner.hasNextLine())
+                        code += scanner.nextLine();
                     JSONArray array = new JSONArray();
                     String[] strs = inputQ.pop();
-                    for(int i = 0; i < strs.length; i++)
+                    for (int i = 0; i < strs.length; i++)
                         array.put(strs[i]);
                     JSONObject object = new JSONObject();
                     try {
                         object.put("Strings", array);
-                    }catch (JSONException e){}
+                    } catch (JSONException e) {
+                    }
                     //gives the packet to the worker
                     workersMap.put(nameQ.peek(), getFreeWorker());
-                    workersMap.get(nameQ.peek()).send(new Gsons.Packet(true, nameQ.pop(), code, object.toString(), dependenciesQ.pop()));
+                    workersMap.get(nameQ.peek()).send(new Gsons.Packet(true, code, nameQ.pop(), object.toString(), dependenciesQ.pop()));
+                    scanner.close();
+                    fileReader.close();
                 }
             }
 
-            for(int i = 0;i < workers.size(); i++)
+            for (int i = 0; i < workers.size(); i++)
                 workers.get(i).close();
 
             serverSocket.close();
-        }catch (IOException x){
+        } catch (IOException x) {
             x.printStackTrace();
         }
         System.out.println("master socket is dead");
     }
 
-    public void waitForConnection(){
-        while(!connection){}
+    public void waitForConnection() {
+        while (!connection) {
+        }
     }
 
     /**
-     *
      * @return the first free active worker the functions finds
      */
-    public Worker getFreeWorker(){
+    public Worker getFreeWorker() {
         boolean got = false;
-        for (int i = lastBusy; i < workers.size(); i++){
-            if(!workers.get(i).isActive()) {
+        for (int i = lastBusy; i < workers.size(); i++) {
+            if (!workers.get(i).isActive()) {
                 lastBusy = i;
                 return workers.get(i);
             }
         }
         while (!got) {
-            for (int i = 0; i < workers.size(); i++){
-                if(!workers.get(i).isActive()) {
+            for (int i = 0; i < workers.size(); i++) {
+                if (!workers.get(i).isActive()) {
                     lastBusy = i;
                     return workers.get(i);
                 }
@@ -140,13 +146,21 @@ public final class MasterSocket extends Thread{
      * wait for all the results of the workers to be received, this function __BLOCKS__ the main thread
      */
     public void waitForResults() {
+        String a ="";
+        boolean True = true;
+        boolean check = false;
+            while(True){
+                check = true;
+                for(int i = 0; i < workers.size(); i++){
+                    if(!workers.get(i).isActive())
+                        check = false;
 
-        try {
-            for(Worker w : workers){
-                while(w.getInput() != null || w.isActive()){ }
+                }
+               if(check)
+                   break;
             }
-        }catch (IOException x){}
     }
+
 
     /**
      * ends the while loop

@@ -110,6 +110,6 @@ public class MasterDThread <T extends MasterDThread>{
 
        // masterSocket.waitForResults();
         System.out.println("start closing");
-        endRun();
+        //endRun();
     }
 }

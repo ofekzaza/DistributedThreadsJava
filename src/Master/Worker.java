@@ -89,7 +89,11 @@ public class Worker{
         active = false;
         scan.close();
         printSteam.close();
-        socket.close();
+        try {
+            socket.close();
+        }catch (IOException x){
+            //its fine, its means the worker have been closed before the master
+        }
     }
 
 }

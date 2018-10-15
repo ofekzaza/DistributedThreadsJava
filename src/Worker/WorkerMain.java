@@ -86,7 +86,7 @@ public class WorkerMain {
      * this method waits for input from the user;
      */
     public boolean waitForInput() throws IOException{
-        System.out.println("whaat???");
+        System.out.println("waiting for input");
         String str = "";
 
         while(!scanSocket.hasNext()){}
@@ -122,7 +122,7 @@ public class WorkerMain {
      */
     public void writeInput() throws JSONException, IOException, InterruptedException{
         System.out.println("name is  "+jsonInput.name);
-        classFileOutputStream = new FileOutputStream(jsonInput.name+".java");
+        classFileOutputStream = new FileOutputStream("src/Distributed/"+jsonInput.name+".java");
         System.out.println("well");
         classFileOutputStream.write(jsonInput.code.getBytes());
         System.out.println(jsonInput.code);
@@ -150,11 +150,10 @@ public class WorkerMain {
         while(answerFileScanner.hasNext()){
             str +=answerFileScanner.next();
         }
+        System.out.println("the answer is "+str);
+
         printStream.println(str);
         printStream.flush();
-        if(false) {
-
-        }
         System.out.println("sended the answer to the master");
     }
 
@@ -167,9 +166,6 @@ public class WorkerMain {
         printStream.println("kill");
         printStream.flush();
         //clean space
-        answerFileOutputStream.write("".getBytes());
-        inputFileOutputStream.write("".getBytes());
-        classFileOutputStream.write("".getBytes());
         //close io connections
         answerFileScanner.close();
         answerFileOutputStream.close();

@@ -20,6 +20,7 @@ public class Child extends MasterDThread {
     public void run(){
         System.out.println("child main");
         master.execute("Example", "","");
+        System.out.println("have givven the order");
         master.waitForResults();
         System.out.println(master.getAnswer("Example"));
     }
