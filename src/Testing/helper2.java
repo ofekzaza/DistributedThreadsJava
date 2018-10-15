@@ -40,7 +40,7 @@ public class helper2 {
             str += input.nextLine();
         }
 
-        Gsons.Packet packet = new Gsons.Packet(true, str, "Example", object.toString());
+        Gsons.Packet packet = new Gsons.Packet(true, str, "Example", object.toString(), "");
 
         str = Gsons.gson.toJson(packet);
 

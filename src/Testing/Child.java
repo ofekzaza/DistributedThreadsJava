@@ -19,6 +19,9 @@ public class Child extends MasterDThread {
     @Override
     public void run(){
         System.out.println("child main");
+        master.execute("Example", "","");
+        master.waitForResults();
+        System.out.println(master.getAnswer("Example"));
     }
 
     @Override

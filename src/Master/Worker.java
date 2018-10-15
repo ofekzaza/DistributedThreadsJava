@@ -47,14 +47,14 @@ public class Worker{
             if(str == "kill"){
                 close();
                 answer = null;
+                active = false;
             }
             if(checkAnswer(str)){
                 active = false;
                 return str;
             }
         }
-        active = false;
-        return "Null";
+        return null;
 }
 
     /**

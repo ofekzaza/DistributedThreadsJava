@@ -121,7 +121,8 @@ public class WorkerMain {
      * @throws IOException
      */
     public void writeInput() throws JSONException, IOException, InterruptedException{
-        classFileOutputStream = new FileOutputStream("src/Distributed/"+jsonInput.name+".java");
+        System.out.println("name is  "+jsonInput.name);
+        classFileOutputStream = new FileOutputStream(jsonInput.name+".java");
         System.out.println("well");
         classFileOutputStream.write(jsonInput.code.getBytes());
         System.out.println(jsonInput.code);

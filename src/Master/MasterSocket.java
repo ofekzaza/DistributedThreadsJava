@@ -24,15 +24,17 @@ public final class MasterSocket extends Thread{
     public ArrayList<Socket> sockets;
     private ArrayList<Worker> workers;
     public static String[] JsonNames = {"Ints", "Doubles", "Booleans", "Strings"};
-    private PriorityQueue<String> nameQ;
-    private PriorityQueue<String[]> inputQ;
-    private PriorityQueue<String> dependenciesQ;
+    private LinkedList<String> nameQ;
+    private LinkedList<String[]> inputQ;
+    private LinkedList<String> dependenciesQ;
     private WaitForWorkers recivingMaster;
     private Scanner scanner;
+    private boolean connection;
     private int lastBusy;
     private HashMap<String, Worker> workersMap;
 
     private MasterSocket(){
+        connection = false;
         try {
             serverSocket = new ServerSocket(port);
         }catch (IOException x){
@@ -42,10 +44,10 @@ public final class MasterSocket extends Thread{
         working = true;
         sockets = new ArrayList<Socket>();
         workers = new ArrayList<Worker>();
-        nameQ = new PriorityQueue<String>();
-        inputQ = new PriorityQueue<String[]>();
+        nameQ = new LinkedList<>();
+        inputQ = new LinkedList<>();
         workersMap = new HashMap<>();
-        dependenciesQ = new PriorityQueue<String>();
+        dependenciesQ = new LinkedList<>();
         recivingMaster = new WaitForWorkers(serverSocket, port);
         System.out.println("Good at least");
     }
@@ -71,6 +73,7 @@ public final class MasterSocket extends Thread{
             sockets.add(serverSocket.accept());
             workers.add(new Worker(sockets.size()-1, sockets.get(sockets.size()-1)));
             System.out.println("got connection");
+            connection = true;
 
             //start another thread to listen to connections
             recivingMaster.start();
@@ -83,7 +86,7 @@ public final class MasterSocket extends Thread{
                     while(scanner.hasNextLine())
                         code+=scanner.nextLine();
                     JSONArray array = new JSONArray();
-                    String[] strs = inputQ.poll();
+                    String[] strs = inputQ.pop();
                     for(int i = 0; i < strs.length; i++)
                         array.put(strs[i]);
                     JSONObject object = new JSONObject();
@@ -92,7 +95,7 @@ public final class MasterSocket extends Thread{
                     }catch (JSONException e){}
                     //gives the packet to the worker
                     workersMap.put(nameQ.peek(), getFreeWorker());
-                    workersMap.get(nameQ.peek()).send(new Gsons.Packet(true, nameQ.poll(), code, object.toString(), dependenciesQ.poll()));
+                    workersMap.get(nameQ.peek()).send(new Gsons.Packet(true, nameQ.pop(), code, object.toString(), dependenciesQ.pop()));
                 }
             }
 
@@ -104,6 +107,10 @@ public final class MasterSocket extends Thread{
             x.printStackTrace();
         }
         System.out.println("master socket is dead");
+    }
+
+    public void waitForConnection(){
+        while(!connection){}
     }
 
     /**
@@ -133,11 +140,12 @@ public final class MasterSocket extends Thread{
      * wait for all the results of the workers to be received, this function __BLOCKS__ the main thread
      */
     public void waitForResults() {
+
         try {
             for(Worker w : workers){
-                while(w.getInput() != "" && w.isActive()){ }
+                while(w.getInput() != null || w.isActive()){ }
             }
-        }catch (Exception x){}
+        }catch (IOException x){}
     }
 
     /**
@@ -181,9 +189,9 @@ public final class MasterSocket extends Thread{
      * @param params string params to the code
      */
     public void giveMission(String name, String dependencies, String... params){
-        nameQ.add(name);
-        dependenciesQ.add(dependencies);
-        inputQ.add(params);
+        nameQ.push(name);
+        dependenciesQ.push(dependencies);
+        inputQ.push(params);
     }
 
     /**

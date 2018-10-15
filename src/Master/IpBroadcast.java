@@ -12,6 +12,7 @@ public class IpBroadcast extends Thread{
     private String selfIp;
     private boolean working = true;
     private int port = 1861;
+    private boolean broadcast = false;
 
     public IpBroadcast(){
 
@@ -34,6 +35,8 @@ public class IpBroadcast extends Thread{
 
             byte[] buffer = selfIp.getBytes();
 
+            broadcast = true;
+
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName("255.255.255.255"), 1861);
 
 
@@ -54,6 +57,10 @@ public class IpBroadcast extends Thread{
             thread = new Thread(this, "Ipbroadcast");
             thread.start();
         }
+    }
+
+    public void waitForBroadcast(){
+        while(!broadcast){}
     }
 
     public void kill(){

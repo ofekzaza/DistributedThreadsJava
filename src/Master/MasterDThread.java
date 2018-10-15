@@ -44,6 +44,7 @@ public class MasterDThread <T extends MasterDThread>{
     private void startBroadcast(){
         broadcast = new IpBroadcast(broadcastPort);
         broadcast.start();
+        broadcast.waitForBroadcast();
     }
 
     /**
@@ -62,6 +63,7 @@ public class MasterDThread <T extends MasterDThread>{
     private void startTcpWorkerConnection(){
         masterSocket = masterSocket.init();
         masterSocket.start();
+        masterSocket.waitForConnection();
     }
 
     /**
@@ -87,8 +89,13 @@ public class MasterDThread <T extends MasterDThread>{
      * @return the string result or "" if there is no result or there is no result
      * @throws IOException
      */
-    public String getAnswer(String name) throws IOException{
-        return masterSocket.getAnswer(name);
+    public String getAnswer(String name){
+        try {
+            return masterSocket.getAnswer(name);
+        }catch (IOException x){
+            x.printStackTrace();
+        }
+        return "";
     }
 
     /**
@@ -96,11 +103,13 @@ public class MasterDThread <T extends MasterDThread>{
      */
     public void start(){
         startBroadcast();
+        System.out.println("start tcp");
         startTcpWorkerConnection();
+        System.out.println("start child main");
         child.run();
 
        // masterSocket.waitForResults();
-
+        System.out.println("start closing");
         endRun();
     }
 }
