@@ -34,9 +34,11 @@ public final class MasterSocket extends Thread {
     private int lastBusy;
     private HashMap<String, Worker> workersMap;
     private FileInputStream fileReader;
+    private CloseType closeType;
 
     private MasterSocket() {
         connection = false;
+        closeType = CloseType.Kill;
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException x) {
@@ -105,9 +107,16 @@ public final class MasterSocket extends Thread {
                 }
             }
 
-            for (int i = 0; i < workers.size(); i++)
-                workers.get(i).close();
+            try{
+                for(int i = 0;i < sockets.size(); i++)
+                    workers.get(i).close(closeType);
+            }catch (IOException x){
+                x.printStackTrace();
+            }
 
+            while (!recivingMaster.isDead()){
+                (new Socket("127.0.0.1", port)).close(); // create a new socket to make him leave the serverSocket.accept()
+            }
             serverSocket.close();
         } catch (IOException x) {
             x.printStackTrace();
@@ -115,6 +124,9 @@ public final class MasterSocket extends Thread {
         System.out.println("master socket is dead");
     }
 
+    /**
+     * wait until mastersocket have a connection at least one worker
+     */
     public void waitForConnection() {
         while (!connection) {
         }
@@ -165,14 +177,10 @@ public final class MasterSocket extends Thread {
     /**
      * ends the while loop
      */
-    public void close(){
+    public void close(CloseType type){
+        recivingMaster.close();
         working = false;
-        try{
-            for(int i = 0;i < sockets.size(); i++)
-                workers.get(i).close();
-        }catch (IOException x){
-            x.printStackTrace();
-        }
+        closeType = type;
     }
 
     /**

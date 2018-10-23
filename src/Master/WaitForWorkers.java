@@ -9,6 +9,7 @@ public class WaitForWorkers extends Thread{
     private String name;
     private ServerSocket serverSocket;
     private boolean working;
+    private boolean died;
 
     /**
      * @param serverSocket MasterSocket ServerSocket
@@ -18,6 +19,7 @@ public class WaitForWorkers extends Thread{
         name = "WaitForWorkersThread"+port;
         this.serverSocket = serverSocket;
         working = true;
+        died = false;
     }
 
     /**
@@ -32,10 +34,24 @@ public class WaitForWorkers extends Thread{
                 x.printStackTrace();
             }
         }
+        died = true;
+        System.out.println("wait for workers is dead!!!!!");
     }
 
+
+    /**
+     * closing the thread
+     */
     public void close(){
         working = false;
+    }
+
+    /**
+     *
+     * @return if the thread have died
+     */
+    public boolean isDead(){
+        return died;
     }
 
     @Override

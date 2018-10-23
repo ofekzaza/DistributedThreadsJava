@@ -45,7 +45,7 @@ public class Worker{
         if(scan.hasNextLine()){
             String str = scan.nextLine();
             if(str == "kill"){
-                close();
+                close(CloseType.Kill);
                 answer = null;
                 active = false;
             }
@@ -83,17 +83,12 @@ public class Worker{
      * this function close the worker and tells the worker to close itself
      * @throws IOException closing socket
      */
-    public void close() throws  IOException{
-        send(new Gsons.Packet(false, "", "", "", ""));
+    public void close(CloseType type) throws  IOException{
+        send(new Gsons.Packet(false, "", "", type.toString(), ""));
         working = false;
         active = false;
         scan.close();
         printSteam.close();
-        try {
-            socket.close();
-        }catch (IOException x){
-            //its fine, its means the worker have been closed before the master
-        }
     }
 
 }

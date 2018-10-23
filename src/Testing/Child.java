@@ -1,5 +1,6 @@
 package Testing;
 
+import Master.CloseType;
 import Master.MasterDThread;
 import Master.Worker;
 
@@ -28,7 +29,7 @@ public class Child extends MasterDThread {
     @Override
     public void start(){
         if(master == null){
-            master = new MasterDThread(this, fileList);
+            master = new MasterDThread(this, CloseType.Kill, fileList);
             master.start();
         }
     }

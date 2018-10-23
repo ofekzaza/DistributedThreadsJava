@@ -12,6 +12,7 @@ public class MasterDThread <T extends MasterDThread>{
     private T child;
     private String[] fileList;
     private MasterSocket masterSocket;
+    private CloseType closeType;
 
     public static void main(String[] args) throws  Exception{
     }
@@ -24,11 +25,12 @@ public class MasterDThread <T extends MasterDThread>{
     /**
      * constructor
      * @param child extends self, the class the calls the library
-     * @param files the name of the files from Distributed Packege you wish to work with.
-     //* @param name the name of the current master
+     * @param closeType the type of the deconstruction of the program
+     * @param files the name of the files from Distributed Package you wish to work with.
      */
-    public MasterDThread(T child, String ... files){
+    public MasterDThread(T child, CloseType closeType, String ... files){
         this.child = child;
+        this.closeType = closeType;
         this.fileList = files;
     }
 
@@ -48,13 +50,16 @@ public class MasterDThread <T extends MasterDThread>{
     }
 
     /**
-     * clean the program after the end, like finalized
+     * close the program and the sockets
+     * @param type what type of closing we would have
+     *             Kill is a total close
+     *             PreFor... closing the master but tells the worker to stay and work until a new master attract the workers
      */
-    private void endRun()
+    public void close(CloseType type)
     {
         System.out.println("the dthread is closing");
         broadcast.kill();
-        masterSocket.close();
+        masterSocket.close(type);
     }
 
     /**
@@ -110,6 +115,6 @@ public class MasterDThread <T extends MasterDThread>{
 
        // masterSocket.waitForResults();
         System.out.println("start closing");
-        //endRun();
+        close(closeType);
     }
 }

@@ -27,6 +27,7 @@ public class WorkerMain {
     private Gsons.Packet jsonInput;
     private Gson gson;
     private Runtime runtime;
+    private boolean working;
 
     public static void main(String[] args) throws IOException, JSONException, InterruptedException {
         WorkerMain worker = new WorkerMain();
@@ -40,6 +41,7 @@ public class WorkerMain {
      */
     public WorkerMain() throws IOException{
         Gson gson = Gsons.gson;
+        working = true;
         inputFileOutputStream = new FileOutputStream("src/Worker/input.txt");
         answerFileInputStream = new FileInputStream("src/Worker/answer.txt");
         answerFileScanner = new Scanner(answerFileInputStream);
@@ -107,6 +109,12 @@ public class WorkerMain {
 
 
         System.out.println("wait for input is done "+ jsonInput.alive );
+        if(!jsonInput.alive)
+            switch (jsonInput.information){
+                case "kill":
+                    working = false;
+                case "prepare":
+            }
         return jsonInput.alive;
     }
 
@@ -176,21 +184,36 @@ public class WorkerMain {
         printStream.close();
         socket.close();
     }
+
+    public void continuationDestructor() throws IOException{
+        printStream.println("kill");
+        printStream.flush();
+
+        classFileOutputStream.close();
+
+        scanSocket.close();
+        printStream.close();
+        socket.close();
+    }
+
     /**
      * main of the worker
      * @throws IOException using sockets
      */
     public void start() throws IOException, JSONException, InterruptedException{
-        catchMasterIp();
-        establishTcpIpCommunications();
-        while(waitForInput()){
-            System.out.println("started the loop");
-            writeInput();
-            System.out.println("wrote the input");
-            execute();
-            System.out.println("finish executing");
-            returnAnswer();
-            System.out.println("returned the output");
+        while(working) {
+            catchMasterIp();
+            establishTcpIpCommunications();
+            while (waitForInput()) {
+                System.out.println("started the loop");
+                writeInput();
+                System.out.println("wrote the input");
+                execute();
+                System.out.println("finish executing");
+                returnAnswer();
+                System.out.println("returned the output");
+            }
+            continuationDestructor();
         }
         destructor();
         System.out.println("worker is dead");
