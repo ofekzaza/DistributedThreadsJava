@@ -131,9 +131,8 @@ public class WorkerMain {
         System.out.println("well");
         classFileOutputStream.write(jsonInput.code.getBytes());
         System.out.println(jsonInput.code);
-        Process p = runtime.exec("javac -cp "+jsonInput.dependencies+"java-json.jar;src src/Distributed/"+jsonInput.name+".java");
+        Process p = runtime.exec("javac -cp "+jsonInput.dependencies+"java-json.jar;src src/Distributed/"+jsonInput.name+".java"); // compile the java file into class file
         p.waitFor();
-        System.out.println("good");
         inputFileOutputStream.write(jsonInput.information.getBytes());
         System.out.println("Wrote the input");
     }
@@ -142,7 +141,7 @@ public class WorkerMain {
      * excute the class file
      */
     public void execute() throws InterruptedException, IOException{
-        Process e = runtime.exec("java -cp "+jsonInput.dependencies+"java-json.jar;src Distributed."+jsonInput.name.replace("/", "."));
+        Process e = runtime.exec("java -cp "+jsonInput.dependencies+"java-json.jar;src Distributed."+jsonInput.name.replace("/", ".")); // run the class file
         e.waitFor();
         System.out.println("finished executing the class file");
     }

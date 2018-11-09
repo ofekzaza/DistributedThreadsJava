@@ -85,7 +85,7 @@ public final class MasterSocket extends Thread {
             while (working) {
 
                 if (nameQ.size() > 0) {
-                    String code = readFile("src/Distributed/" + nameQ.peek() + ".java"); // read the code
+                    String code = readFile("Distributed/" + nameQ.peek() + ".java"); // read the code
 
                     //gives the packet to the worker
                     workersMap.put(nameQ.peek(), getFreeWorker());
@@ -124,13 +124,13 @@ public final class MasterSocket extends Thread {
 
     /**
      *
-     * @param name a file name + location + type
+     * @param name a file name + location(from src not include) + type
      * @return a string of the input of the file, tested with java files, does not works with text normally
      * @throws IOException
      */
     public String readFile(String name) throws IOException{
         String fileString = "";
-        fileReader = new FileInputStream(name);
+        fileReader = new FileInputStream("src/"+name);
         scanner = new Scanner(fileReader);
         while (scanner.hasNextLine())
             fileString += scanner.nextLine();
