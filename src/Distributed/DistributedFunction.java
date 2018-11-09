@@ -1,11 +1,6 @@
 package Distributed;
 
 import GsonInformation.Gsons;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -15,7 +10,6 @@ public class DistributedFunction {
     private String fileInputName;
     private FileInputStream inputStream;
     private DistributedFunction child;
-    private JSONObject jsonObject;
     private Scanner scanner;
     private Gsons.Basic inputGson;
 
@@ -30,7 +24,6 @@ public class DistributedFunction {
      * the constructor of the worker file class
      * @param child the child script
      * @throws IOException reads the input from a file
-     * @throws JSONException the input is in json format
      */
     public DistributedFunction(DistributedFunction child){
         try {
@@ -42,10 +35,11 @@ public class DistributedFunction {
             while (scanner.hasNextLine()) {
                 input += scanner.nextLine();
             }
+            System.out.println("input:" + input);
             inputGson = Gsons.JSON_CACHE_PARSER_BASIC.fromJson(input);
             scanner.close();
             inputStream.close();
-        }catch (Exception x){
+        }catch (IOException x){
             x.printStackTrace();
         }
     }

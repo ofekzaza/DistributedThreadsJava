@@ -84,7 +84,8 @@ public class Worker{
      * @throws IOException closing socket
      */
     public void close(CloseType type) throws  IOException{
-        send(new Gsons.Packet(false, "", "", type.toString(), ""));
+        String[] a = {""};
+        send(new Gsons.Packet(false, "", "", type.toString(), a, a, a));
         working = false;
         active = false;
         scan.close();

@@ -2,9 +2,11 @@ package Worker;
 
 import GsonInformation.Gsons;
 import com.google.gson.Gson;
-import org.json.JSONException;
-
-import java.io.*;
+import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.BufferedInputStream;
+import java.io.PrintStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.Socket;
@@ -13,9 +15,7 @@ import java.util.Scanner;
 public class WorkerMain {
     private String serverIp = "";
     private Socket socket;
-    private DataInputStream inputStream;
     private Scanner scanSocket;
-    private DataOutputStream outputStream;
     private PrintStream printStream;
     private final int port = 1948;
     private FileOutputStream classFileOutputStream;
@@ -29,7 +29,7 @@ public class WorkerMain {
     private Runtime runtime;
     private boolean working;
 
-    public static void main(String[] args) throws IOException, JSONException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         WorkerMain worker = new WorkerMain();
         worker.start();
     }
@@ -93,18 +93,19 @@ public class WorkerMain {
 
         while(!scanSocket.hasNext()){}
 
-        System.out.println("are you killing me?");
         str += scanSocket.nextLine();
 
-       // while(scanSocket.hasNextLine()){
-         //   str += scanSocket.nextLine();
-        //}
-
-        System.out.println("wtf");
-        System.out.println(str);
         System.out.println("have input from the master");
 
         jsonInput = Gsons.JSON_CACHE_PARSER_PACKET.fromJson(str);
+
+        if(false) {
+            System.out.println("code " + jsonInput.code);
+            System.out.println("sources " + Gsons.toString(jsonInput.sources));
+            System.out.println("dependancies " + Gsons.toString(jsonInput.dependencies));
+            System.out.println("Name " + jsonInput.name);
+            System.out.println("inforamtion " + jsonInput.information);
+        }
 
         System.out.println("wait for input is done "+ jsonInput.alive );
         if(!jsonInput.alive)
@@ -116,32 +117,26 @@ public class WorkerMain {
         return jsonInput.alive;
     }
 
-    public boolean test(){
-        System.out.println("maybe ");
-        return scanSocket.hasNext();
-    }
-
     /**
      * takes the json input and write it into files
      * @throws IOException
      */
-    public void writeInput() throws JSONException, IOException, InterruptedException{
+    public void writeInput() throws IOException, InterruptedException{
         System.out.println("name is  "+jsonInput.name);
-        classFileOutputStream = new FileOutputStream("src/Distributed/"+jsonInput.name+".java");
+        classFileOutputStream = new FileOutputStream("src/"+jsonInput.name+".java");
         System.out.println("well");
         classFileOutputStream.write(jsonInput.code.getBytes());
         System.out.println(jsonInput.code);
-        Process p = runtime.exec("javac -cp "+jsonInput.dependencies+"java-json.jar;src src/Distributed/"+jsonInput.name+".java"); // compile the java file into class file
+        Process p = runtime.exec("javac -cp src;gson-2.7.jar src/"+jsonInput.name+".java"); // compile the java file into class file
         p.waitFor();
         inputFileOutputStream.write(jsonInput.information.getBytes());
-        System.out.println("Wrote the input");
     }
 
     /**
      * excute the class file
      */
     public void execute() throws InterruptedException, IOException{
-        Process e = runtime.exec("java -cp "+jsonInput.dependencies+"java-json.jar;src Distributed."+jsonInput.name.replace("/", ".")); // run the class file
+        Process e = runtime.exec("java -cp gson-2.7.jar;src "+jsonInput.name.replace("/", ".")); // run the class file
         e.waitFor();
         System.out.println("finished executing the class file");
     }
@@ -196,7 +191,7 @@ public class WorkerMain {
      * main of the worker
      * @throws IOException using sockets
      */
-    public void start() throws IOException, JSONException, InterruptedException{
+    public void start() throws IOException, InterruptedException{
         while(working) {
             catchMasterIp();
             establishTcpIpCommunications();

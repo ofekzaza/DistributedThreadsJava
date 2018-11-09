@@ -1,16 +1,14 @@
 package Master;
 
 import GsonInformation.Gsons;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Scanner;
 
 /**
  * singalton responsible from communication with the workers
@@ -27,7 +25,8 @@ public final class MasterSocket extends Thread {
     public static String[] JsonNames = {"Ints", "Doubles", "Booleans", "Strings"};
     private LinkedList<String> nameQ;
     private LinkedList<String[]> inputQ;
-    private LinkedList<String> dependenciesQ;
+    private LinkedList<String[]> dependenciesQ;
+    private LinkedList<String[]> sourcesQ;
     private WaitForWorkers recivingMaster;
     private Scanner scanner;
     private boolean connection;
@@ -35,6 +34,7 @@ public final class MasterSocket extends Thread {
     private HashMap<String, Worker> workersMap;
     private FileInputStream fileReader;
     private CloseType closeType;
+    private String[] dependenciesFiles;
 
     private MasterSocket() {
         connection = false;
@@ -50,6 +50,7 @@ public final class MasterSocket extends Thread {
         workers = new ArrayList<Worker>();
         nameQ = new LinkedList<>();
         inputQ = new LinkedList<>();
+        sourcesQ = new LinkedList<>();
         workersMap = new HashMap<>();
         dependenciesQ = new LinkedList<>();
         recivingMaster = new WaitForWorkers(serverSocket, port);
@@ -85,11 +86,13 @@ public final class MasterSocket extends Thread {
             while (working) {
 
                 if (nameQ.size() > 0) {
-                    String code = readFile("Distributed/" + nameQ.peek() + ".java"); // read the code
+                    String code = readFile( nameQ.peek() + ".java"); // read the code
+
+                    readFiles();
 
                     //gives the packet to the worker
                     workersMap.put(nameQ.peek(), getFreeWorker());
-                    workersMap.get(nameQ.peek()).send(new Gsons.Packet(true, code, nameQ.pop(), getInput(inputQ.pop()), dependenciesQ.pop()));
+                    workersMap.get(nameQ.peek()).send(new Gsons.Packet(true, code, nameQ.pop(), getInput(inputQ.pop()), sourcesQ.pop(), dependenciesQ.pop(), dependenciesFiles));
                     scanner.close();
                     fileReader.close();
                 }
@@ -110,6 +113,21 @@ public final class MasterSocket extends Thread {
             x.printStackTrace();
         }
         System.out.println("master socket is dead");
+    }
+
+    /**
+     * read the dependencies files
+     */
+    public void readFiles(){
+        if(sourcesQ.peek().length != dependenciesQ.peek().length){
+            System.out.println("not equal numbers of sources and dependancies !!!!!!!!!!!!!!!!!!!!!");
+            close(closeType);
+            return;
+        }
+        dependenciesFiles = new String[sourcesQ.peek().length];
+        for(int i = 0; i < sourcesQ.peek().length; i++){
+            //TODO
+        }
     }
 
     /**
@@ -168,7 +186,7 @@ public final class MasterSocket extends Thread {
     }
 
     /**
-     * wait for all the results of the workers to be received, this function __BLOCKS__ the main thread
+     * wait for all the results of the workers to be received, this function BLOCKS the main thread
      */
     public void waitForResults() {
         String a ="";
@@ -223,10 +241,11 @@ public final class MasterSocket extends Thread {
      * @param dependencies of the file, if it is both on the master and on the worker in src file put "" otherwise dont use!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      * @param params string params to the code
      */
-    public void giveMission(String name, String dependencies, String... params){
+    public void giveMission(String name,String[] sources, String[] dependencies, String... params){
         nameQ.push(name);
         dependenciesQ.push(dependencies);
         inputQ.push(params);
+        sourcesQ.push(sources);
     }
 
     /**

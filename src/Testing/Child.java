@@ -20,10 +20,14 @@ public class Child extends MasterDThread {
     @Override
     public void run(){
         System.out.println("child main");
-        master.execute("Example", "","");
+        String[] sources = {""};
+        String[] dependencies = {""};
+        System.out.println(sources.length);
+        System.out.println(dependencies.length);
+        master.execute("Distributed/Example", sources, dependencies, "");
         System.out.println("have givven the order");
         master.waitForResults();
-        System.out.println(master.getAnswer("Example"));
+        System.out.println(master.getAnswer("Distributed/Example"));
     }
 
     @Override
