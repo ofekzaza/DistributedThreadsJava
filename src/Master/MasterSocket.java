@@ -85,23 +85,11 @@ public final class MasterSocket extends Thread {
             while (working) {
 
                 if (nameQ.size() > 0) {
-                    String code = "";
-                    fileReader = new FileInputStream("src/Distributed/" + nameQ.peek() + ".java");
-                    scanner = new Scanner(fileReader);
-                    while (scanner.hasNextLine())
-                        code += scanner.nextLine();
-                    JSONArray array = new JSONArray();
-                    String[] strs = inputQ.pop();
-                    for (int i = 0; i < strs.length; i++)
-                        array.put(strs[i]);
-                    JSONObject object = new JSONObject();
-                    try {
-                        object.put("Strings", array);
-                    } catch (JSONException e) {
-                    }
+                    String code = readFile("src/Distributed/" + nameQ.peek() + ".java"); // read the code
+
                     //gives the packet to the worker
                     workersMap.put(nameQ.peek(), getFreeWorker());
-                    workersMap.get(nameQ.peek()).send(new Gsons.Packet(true, code, nameQ.pop(), object.toString(), dependenciesQ.pop()));
+                    workersMap.get(nameQ.peek()).send(new Gsons.Packet(true, code, nameQ.pop(), getInput(inputQ.pop()), dependenciesQ.pop()));
                     scanner.close();
                     fileReader.close();
                 }
@@ -122,6 +110,31 @@ public final class MasterSocket extends Thread {
             x.printStackTrace();
         }
         System.out.println("master socket is dead");
+    }
+
+    /**
+     *
+     * @param inputs strings
+     * @return gson string of the inputs
+     */
+    public String getInput(String[] inputs){
+        Gsons.Basic packet = new Gsons.Basic(inputs);
+        return Gsons.gson.toJson(packet);
+    }
+
+    /**
+     *
+     * @param name a file name + location + type
+     * @return a string of the input of the file, tested with java files, does not works with text normally
+     * @throws IOException
+     */
+    public String readFile(String name) throws IOException{
+        String fileString = "";
+        fileReader = new FileInputStream(name);
+        scanner = new Scanner(fileReader);
+        while (scanner.hasNextLine())
+            fileString += scanner.nextLine();
+        return fileString;
     }
 
     /**

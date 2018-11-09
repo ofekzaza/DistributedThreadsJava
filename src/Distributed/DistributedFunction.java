@@ -1,5 +1,6 @@
 package Distributed;
 
+import GsonInformation.Gsons;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,12 +16,8 @@ public class DistributedFunction {
     private FileInputStream inputStream;
     private DistributedFunction child;
     private JSONObject jsonObject;
-    private DataInputStream dataInputStream;
     private Scanner scanner;
-    private int[] ints;
-    private String[] strings;
-    private double[] doubles;
-    private boolean[] booleans;
+    private Gsons.Basic inputGson;
 
     /**
      * default constructor for child
@@ -40,20 +37,13 @@ public class DistributedFunction {
             fileInputName = "src/Worker/input.txt";
             this.child = child;
             inputStream = new FileInputStream(fileInputName);
-            dataInputStream = new DataInputStream(inputStream);
-            scanner = new Scanner(dataInputStream);
+            scanner = new Scanner(inputStream);
             String input = "";
-            while (scanner.hasNext()) {
-                input += scanner.next();
+            while (scanner.hasNextLine()) {
+                input += scanner.nextLine();
             }
-            jsonObject = new JSONObject(input);
-            JSONArray array = jsonObject.getJSONArray("Strings");
-            strings = new String[array.length()];
-            for (int i = 0; i < array.length(); i++) {
-                strings[i] = array.getString(i);
-            }
+            inputGson = Gsons.JSON_CACHE_PARSER_BASIC.fromJson(input);
             scanner.close();
-            dataInputStream.close();
             inputStream.close();
         }catch (Exception x){
             x.printStackTrace();
@@ -67,11 +57,12 @@ public class DistributedFunction {
 
     /**
      * the main of the class file
+     * gives the child a
      */
     public void start(){
         try {
             FileOutputStream outputStream = new FileOutputStream("src/Worker/answer.txt");
-            outputStream.write(child.execute(strings).getBytes());
+            outputStream.write(child.execute(inputGson.strings).getBytes());
             outputStream.close();
         }catch (Exception x){
             x.printStackTrace();

@@ -27,6 +27,30 @@ public class Gsons {
         }
     }
 
-    public static final TypeAdapter<GsonInformation.Gsons.Packet> JSON_CACHE_PARSER = gson
+    public static class Basic{
+        public String[] strings;
+        public String tostring;
+
+        public Basic(String... params){
+            strings = params;
+        }
+
+        @Override
+        public String toString(){
+            if(tostring == null){
+                tostring = "";
+                if(strings.length > 0)
+                    tostring += 0 +": "+strings[0];
+                for(int i = 1; i < strings.length; i++){
+                    tostring += ", "+i+": "+strings[i];
+                }
+            }
+            return tostring;
+        }
+    }
+
+    public static final TypeAdapter<GsonInformation.Gsons.Packet> JSON_CACHE_PARSER_PACKET = gson
             .getAdapter(GsonInformation.Gsons.Packet.class);
+    public static final TypeAdapter<GsonInformation.Gsons.Basic> JSON_CACHE_PARSER_BASIC = gson
+            .getAdapter(GsonInformation.Gsons.Basic.class);
 }

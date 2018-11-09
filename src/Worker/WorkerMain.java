@@ -104,9 +104,7 @@ public class WorkerMain {
         System.out.println(str);
         System.out.println("have input from the master");
 
-        jsonInput = Gsons.JSON_CACHE_PARSER.fromJson(str);
-
-
+        jsonInput = Gsons.JSON_CACHE_PARSER_PACKET.fromJson(str);
 
         System.out.println("wait for input is done "+ jsonInput.alive );
         if(!jsonInput.alive)
@@ -125,7 +123,6 @@ public class WorkerMain {
 
     /**
      * takes the json input and write it into files
-     * @throws JSONException
      * @throws IOException
      */
     public void writeInput() throws JSONException, IOException, InterruptedException{
