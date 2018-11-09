@@ -86,7 +86,7 @@ public final class MasterSocket extends Thread {
             while (working) {
 
                 if (nameQ.size() > 0) {
-                    String code = readFile( nameQ.peek() + ".java"); // read the code
+                    String code = readFile( "src/"+nameQ.peek() + ".java"); // read the code
 
                     readFiles();
 
@@ -118,7 +118,7 @@ public final class MasterSocket extends Thread {
     /**
      * read the dependencies files
      */
-    public void readFiles(){
+    public void readFiles() throws IOException{
         if(sourcesQ.peek().length != dependenciesQ.peek().length){
             System.out.println("not equal numbers of sources and dependancies !!!!!!!!!!!!!!!!!!!!!");
             close(closeType);
@@ -126,7 +126,7 @@ public final class MasterSocket extends Thread {
         }
         dependenciesFiles = new String[sourcesQ.peek().length];
         for(int i = 0; i < sourcesQ.peek().length; i++){
-            //TODO
+            dependenciesFiles[i] = readFile(sourcesQ.peek()[i]+"/"+dependenciesQ.peek()[i]+".java");
         }
     }
 
@@ -147,8 +147,11 @@ public final class MasterSocket extends Thread {
      * @throws IOException
      */
     public String readFile(String name) throws IOException{
+        System.out.println(name);
+        if(name.length() < "/.java".length()+1)
+            return "";
         String fileString = "";
-        fileReader = new FileInputStream("src/"+name);
+        fileReader = new FileInputStream(name);
         scanner = new Scanner(fileReader);
         while (scanner.hasNextLine())
             fileString += scanner.nextLine();

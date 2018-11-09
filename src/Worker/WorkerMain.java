@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedInputStream;
 import java.io.PrintStream;
 import java.net.DatagramPacket;
@@ -99,13 +100,9 @@ public class WorkerMain {
 
         jsonInput = Gsons.JSON_CACHE_PARSER_PACKET.fromJson(str);
 
-        if(false) {
-            System.out.println("code " + jsonInput.code);
-            System.out.println("sources " + Gsons.toString(jsonInput.sources));
-            System.out.println("dependancies " + Gsons.toString(jsonInput.dependencies));
-            System.out.println("Name " + jsonInput.name);
-            System.out.println("inforamtion " + jsonInput.information);
-        }
+        System.out.println("sources " + Gsons.toString(jsonInput.sources));
+        System.out.println("dependancies " + Gsons.toString(jsonInput.dependencies));
+        System.out.println("dep code "+Gsons.toString(jsonInput.dependenciesFiles));
 
         System.out.println("wait for input is done "+ jsonInput.alive );
         if(!jsonInput.alive)
@@ -122,6 +119,14 @@ public class WorkerMain {
      * @throws IOException
      */
     public void writeInput() throws IOException, InterruptedException{
+
+        BufferedOutputStream output;
+        for(int i = 0 ; i < jsonInput.dependencies.length; i++){
+            output = new BufferedOutputStream(new FileOutputStream(jsonInput.sources[i]+"/"+jsonInput.dependencies[i]+".java"));
+            output.write(jsonInput.dependenciesFiles[i].getBytes());
+            output.close();
+        }
+
         System.out.println("name is  "+jsonInput.name);
         classFileOutputStream = new FileOutputStream("src/"+jsonInput.name+".java");
         System.out.println("well");

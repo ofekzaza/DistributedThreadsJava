@@ -26,8 +26,7 @@ public final class ExampleCopyDontUse extends DistributedFunction {
      */
     @Override
     public String execute(String[] strings){
-        System.out.println("good");
-        return "good";
+        return "good this is good";
     }
 
     /**

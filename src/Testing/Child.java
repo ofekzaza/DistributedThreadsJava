@@ -25,9 +25,9 @@ public class Child extends MasterDThread {
         System.out.println(sources.length);
         System.out.println(dependencies.length);
         master.execute("Distributed/Example", sources, dependencies, "");
-        System.out.println("have givven the order");
+        System.out.println("have given the order");
         master.waitForResults();
-        System.out.println(master.getAnswer("Distributed/Example"));
+        System.out.println("answer is: "+master.getAnswer("Distributed/Example"));
     }
 
     @Override
