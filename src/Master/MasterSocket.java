@@ -57,13 +57,6 @@ public final class MasterSocket extends Thread {
         System.out.println("Good at least");
     }
 
-    // public static void main(String[] args){
-    //   MasterSocket socket = MasterSocket.init();
-    // socket.run();
-    //   while(socket.sockets.size() == 0){}
-    // socket.kill();
-    //}
-
     public static MasterSocket init() {
         return instance;
     }
@@ -120,7 +113,7 @@ public final class MasterSocket extends Thread {
      */
     public void readFiles() throws IOException{
         if(sourcesQ.peek().length != dependenciesQ.peek().length){
-            System.out.println("not equal numbers of sources and dependancies !!!!!!!!!!!!!!!!!!!!!");
+            System.out.println("not equal numbers of sources and dependencies !!!!!!!!!!!!!!!!!!!!!");
             close(closeType);
             return;
         }
