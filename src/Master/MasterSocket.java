@@ -147,7 +147,7 @@ public final class MasterSocket extends Thread {
         fileReader = new FileInputStream(name);
         scanner = new Scanner(fileReader);
         while (scanner.hasNextLine())
-            fileString += scanner.nextLine();
+            fileString += scanner.nextLine() + "\n";
         return fileString;
     }
 

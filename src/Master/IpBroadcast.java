@@ -1,10 +1,9 @@
 package Master;
 
-import Worker.WorkerMain;
-
-import java.io.IOException;
-import java.net.*;
-import java.nio.Buffer;
+import java.net.DatagramSocket;
+import java.net.DatagramPacket;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 
 public class IpBroadcast extends Thread{
     private Thread thread;
@@ -31,7 +30,7 @@ public class IpBroadcast extends Thread{
         }
         try {
             socket = new DatagramSocket();
-            socket.setBroadcast(true); // the socket will broadcast
+            socket.setBroadcast(true); // the socket will broadcast, truly impressive
 
             byte[] buffer = selfIp.getBytes();
 

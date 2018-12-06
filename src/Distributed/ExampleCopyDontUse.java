@@ -25,7 +25,7 @@ public final class ExampleCopyDontUse extends DistributedFunction {
      * @return a String and send him back to the master
      */
     @Override
-    public String execute(String[] strings){
+    public String run(String[] strings){
         return "good this is good";
     }
 

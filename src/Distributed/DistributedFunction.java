@@ -16,6 +16,7 @@ public class DistributedFunction {
     /**
      * default constructor for child
      */
+    @Deprecated
     public DistributedFunction(){
 
     }
@@ -56,7 +57,7 @@ public class DistributedFunction {
     public void start(){
         try {
             FileOutputStream outputStream = new FileOutputStream("src/Worker/answer.txt");
-            outputStream.write(child.execute(inputGson.strings).getBytes());
+            outputStream.write(child.run(inputGson.strings).getBytes());
             outputStream.close();
         }catch (Exception x){
             x.printStackTrace();
@@ -65,10 +66,8 @@ public class DistributedFunction {
 
     /**
      * the function which the user writes
-     * @param strings string inputs
+     * @param args string inputs
      * @return String - string can be anything if its managed the right way.
      */
-    public String execute(String[] strings){
-        return "";
-    }
+    public String run(String[] args){return "";};
 }

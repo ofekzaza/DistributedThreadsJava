@@ -3,6 +3,8 @@ package Testing;
 import Master.CloseType;
 import Master.MasterDThread;
 
+import java.util.zip.CRC32;
+
 public class  Child extends MasterDThread {
     private MasterDThread master;
     private String[] fileList;
@@ -23,10 +25,12 @@ public class  Child extends MasterDThread {
         String[] dependencies = {""};
         System.out.println(sources.length);
         System.out.println(dependencies.length);
-        master.execute("Distributed/Example", sources, dependencies, "");
+        CRC32 crc = new CRC32();
+        crc.update(String.valueOf(2147483646).getBytes());
+        master.execute("Distributed/CRC32Test", sources, dependencies, "0", "2147483647", "" + crc.getValue());
         System.out.println("have given the order");
         master.waitForResults();
-        System.out.println("answer is: "+master.getAnswer("Distributed/Example"));
+        System.out.println("answer is: "+master.getAnswer("Distributed/CRC32Test"));
     }
 
     @Override
