@@ -2,7 +2,6 @@ package Testing;
 
 import Master.CloseType;
 import Master.MasterDThread;
-import Master.Worker;
 
 public class  Child extends MasterDThread {
     private MasterDThread master;
