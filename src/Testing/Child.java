@@ -4,7 +4,7 @@ import Master.CloseType;
 import Master.MasterDThread;
 import Master.Worker;
 
-public class Child extends MasterDThread {
+public class  Child extends MasterDThread {
     private MasterDThread master;
     private String[] fileList;
 
