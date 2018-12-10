@@ -48,7 +48,6 @@ public class IpBroadcast extends Thread{
         }catch (Exception x){
             x.printStackTrace();
         }
-        System.out.println("broadcast is dead");
     }
 
     public void start(){

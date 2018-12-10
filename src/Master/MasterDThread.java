@@ -1,10 +1,6 @@
 package Master;
 
-import Worker.WorkerMain;
-
 import java.io.IOException;
-import java.net.Inet4Address;
-import java.util.ArrayList;
 
 public class MasterDThread <T extends MasterDThread>{
     private IpBroadcast broadcast;
@@ -57,7 +53,6 @@ public class MasterDThread <T extends MasterDThread>{
      */
     public void close(CloseType type)
     {
-        System.out.println("the dthread is closing");
         broadcast.kill();
         masterSocket.close(type);
     }
@@ -105,17 +100,12 @@ public class MasterDThread <T extends MasterDThread>{
     }
 
     /**
-     * main of the library
+     * The main of the library
      */
     public void start(){
         startBroadcast();
-        System.out.println("start tcp");
         startTcpWorkerConnection();
-        System.out.println("start child main");
         child.run();
-
-       // masterSocket.waitForResults();
-        System.out.println("start closing");
         close(closeType);
     }
 }

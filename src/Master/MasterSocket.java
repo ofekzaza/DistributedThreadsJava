@@ -70,7 +70,6 @@ public final class MasterSocket extends Thread {
             //wait to get the first connection
             sockets.add(serverSocket.accept());
             workers.add(new Worker(sockets.size() - 1, sockets.get(sockets.size() - 1)));
-            System.out.println("got connection");
             connection = true;
 
             //start another thread to listen to connections
@@ -105,7 +104,6 @@ public final class MasterSocket extends Thread {
         } catch (IOException x) {
             x.printStackTrace();
         }
-        System.out.println("master socket is dead");
     }
 
     /**
@@ -113,7 +111,6 @@ public final class MasterSocket extends Thread {
      */
     public void readFiles() throws IOException{
         if(sourcesQ.peek().length != dependenciesQ.peek().length){
-            System.out.println("not equal numbers of sources and dependencies !!!!!!!!!!!!!!!!!!!!!");
             close(closeType);
             return;
         }
@@ -188,16 +185,15 @@ public final class MasterSocket extends Thread {
         String a ="";
         boolean True = true;
         boolean check = false;
-            while(True){
-                check = true;
-                for(int i = 0; i < workers.size(); i++){
-                    if(!workers.get(i).isActive())
-                        check = false;
-
-                }
-               if(check)
-                   break;
+        while(True){
+            check = true;
+            for(int i = 0; i < workers.size(); i++){
+                if(!workers.get(i).isActive())
+                    check = false;
             }
+            if(check)
+                break;
+        }
     }
 
 
