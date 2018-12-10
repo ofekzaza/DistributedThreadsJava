@@ -89,20 +89,20 @@ public class WorkerMain {
      * this method waits for input from the user;
      */
     public boolean waitForInput() throws IOException{
-        System.out.println("waiting for input");
         String str = "";
 
         while(!scanSocket.hasNext()){}
 
         str += scanSocket.nextLine();
 
-        System.out.println("have input from the master");
+        System.out.println("input from the master");
 
         jsonInput = Gsons.JSON_CACHE_PARSER_PACKET.fromJson(str);
 
         System.out.println("sources " + Gsons.toString(jsonInput.sources));
-        System.out.println("dependancies " + Gsons.toString(jsonInput.dependencies));
-        System.out.println("dep code "+Gsons.toString(jsonInput.dependenciesFiles));
+        System.out.println("dependencies " + Gsons.toString(jsonInput.dependencies));
+        System.out.println("dependencies code files "+Gsons.toString(jsonInput.dependenciesFiles));
+        System.out.println("information " + Gsons.toString(jsonInput.information));
 
         System.out.println("wait for input is done "+ jsonInput.alive );
         if(!jsonInput.alive)
