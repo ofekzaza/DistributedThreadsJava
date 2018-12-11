@@ -44,9 +44,9 @@ public class WorkerMain {
         Gson gson = Gsons.gson;
         working = true;
         inputFileOutputStream = new FileOutputStream("src/Worker/input.txt");
+        answerFileOutputStream = new FileOutputStream("src/Worker/answer.txt");
         answerFileInputStream = new FileInputStream("src/Worker/answer.txt");
         answerFileScanner = new Scanner(answerFileInputStream);
-        answerFileOutputStream = new FileOutputStream("src/Worker/answer.txt");
         runtime = Runtime.getRuntime();
     }
 
@@ -119,12 +119,18 @@ public class WorkerMain {
      * @throws IOException
      */
     public void writeInput() throws IOException, InterruptedException{
-
+        FileOutputStream file;
         BufferedOutputStream output;
-        for(int i = 0 ; i < jsonInput.dependencies.length; i++){
-            output = new BufferedOutputStream(new FileOutputStream(jsonInput.sources[i]+"/"+jsonInput.dependencies[i]+".java"));
-            output.write(jsonInput.dependenciesFiles[i].getBytes());
-            output.close();
+        if(jsonInput.dependenciesFiles.length > 0 && jsonInput.dependenciesFiles[0].length() != 0) {
+            for (int i = 0; i < jsonInput.dependenciesFiles.length; i++) {
+                if(jsonInput.sources[i] + "/" + jsonInput.dependencies[i] + ".java" != "/.java") {
+                    file = new FileOutputStream(jsonInput.sources[i] + "/" + jsonInput.dependencies[i] + ".java");
+                    output = new BufferedOutputStream(file);
+                    output.write(jsonInput.dependenciesFiles[i].getBytes());
+                    output.close();
+                    file.close();
+                }
+            }
         }
 
         System.out.println("name is  "+jsonInput.name);

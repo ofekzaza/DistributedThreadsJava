@@ -23,6 +23,7 @@ public class  Child extends MasterDThread {
 
     @Override
     public void run(){
+        final long startTime = System.currentTimeMillis();
         System.out.println("child main");
         String[] sources = {""};
         String[] dependencies = {""};
@@ -42,6 +43,9 @@ public class  Child extends MasterDThread {
         System.out.println("have given the order");
         master.waitForResults();
         System.out.println("answer is: "+master.getAnswer("Distributed/Sha256Test"));
+        final long endTime = System.currentTimeMillis();
+        final long time = endTime - startTime;
+        System.out.println("To run the program its took min: " + (long)(time/1000/60) + ", sec: " + (long)(time/1000)%60 + ", milisec: " + time %(60*1000));
     }
 
     @Override
