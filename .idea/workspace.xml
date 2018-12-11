@@ -1,22 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="becfa097-61eb-41d6-8702-bd23c9a90811" name="Default Changelist" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Testing/CUNTS.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/DistributedThreadsJava/META-INF/DistributedThreadsJava.kotlin_module" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/DistributedThreadsJava/Testing/hasing.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/Worker/answer.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/Worker/input.txt" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/DistributedThreadsJava/Master/MasterDThread.class" afterPath="$PROJECT_DIR$/out/production/DistributedThreadsJava/Master/MasterDThread.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/DistributedThreadsJava/Testing/Child.class" afterPath="$PROJECT_DIR$/out/production/DistributedThreadsJava/Testing/Child.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/DistributedThreadsJava/Worker/WorkerMain.class" afterPath="$PROJECT_DIR$/out/production/DistributedThreadsJava/Worker/WorkerMain.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/DistributedThreadsJava/Worker/answer.txt" afterPath="$PROJECT_DIR$/out/production/DistributedThreadsJava/Worker/answer.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Distributed/Sha256Test.java" afterPath="$PROJECT_DIR$/src/Distributed/Sha256Test.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Testing/Child.java" afterPath="$PROJECT_DIR$/src/Testing/Child.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Worker/WorkerMain.java" afterPath="$PROJECT_DIR$/src/Worker/WorkerMain.java" />
-    </list>
+    <list default="true" id="becfa097-61eb-41d6-8702-bd23c9a90811" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -666,7 +651,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-11" y="-11" width="1942" height="1042" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -677,7 +661,7 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32580262" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32580262" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Floobits" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
