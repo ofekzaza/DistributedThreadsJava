@@ -29,6 +29,7 @@ public class WorkerMain {
     private Gson gson;
     private Runtime runtime;
     private boolean working;
+    private boolean debbuging = false;
 
     public static void main(String[] args) throws IOException, InterruptedException {
         WorkerMain worker = new WorkerMain();
@@ -61,7 +62,7 @@ public class WorkerMain {
         dataSocket.receive(packet);
         serverIp = new String(packet.getData());
         dataSocket.close();
-        System.out.println("Master ip is "+serverIp);
+        print("Master ip is "+serverIp);
     }
 
     /**
@@ -72,7 +73,7 @@ public class WorkerMain {
         boolean trying = true;
         while(trying) {
             try{
-                System.out.println("trying to establish communications");
+                print("trying to establish communications");
                 socket = new Socket(serverIp, port);
                 trying = false;
             }catch (Exception x){
@@ -82,7 +83,7 @@ public class WorkerMain {
         dataInputStream = new BufferedInputStream(socket.getInputStream());
         scanSocket = new Scanner(dataInputStream);
         printStream = new PrintStream(socket.getOutputStream());
-        System.out.println("establised communication !");
+        print("establised communication !");
     }
 
     /**
@@ -91,20 +92,18 @@ public class WorkerMain {
     public boolean waitForInput() throws IOException{
         String str = "";
 
-        while(!scanSocket.hasNext()){}
+        while(!scanSocket.hasNext()){ }
 
         str += scanSocket.nextLine();
 
-        System.out.println("input from the master");
-
         jsonInput = Gsons.JSON_CACHE_PARSER_PACKET.fromJson(str);
 
-        System.out.println("sources " + Gsons.toString(jsonInput.sources));
-        System.out.println("dependencies " + Gsons.toString(jsonInput.dependencies));
-        System.out.println("dependencies code files "+Gsons.toString(jsonInput.dependenciesFiles));
-        System.out.println("information " + Gsons.toString(jsonInput.information));
+        print("sources " + Gsons.toString(jsonInput.sources));
+        print("dependencies " + Gsons.toString(jsonInput.dependencies));
+        print("dependencies code files "+Gsons.toString(jsonInput.dependenciesFiles));
+        print("information " + Gsons.toString(jsonInput.information));
 
-        System.out.println("wait for input is done "+ jsonInput.alive );
+        print("wait for input is done "+ jsonInput.alive );
         if(!jsonInput.alive)
             switch (jsonInput.information){
                 case "kill":
@@ -133,11 +132,11 @@ public class WorkerMain {
             }
         }
 
-        System.out.println("name is  "+jsonInput.name);
+        print("name is  "+jsonInput.name);
+
         classFileOutputStream = new FileOutputStream("src/"+jsonInput.name+".java");
-        System.out.println("well");
         classFileOutputStream.write(jsonInput.code.getBytes());
-        System.out.println(jsonInput.code);
+
         Process p = runtime.exec("javac -cp src;gson-2.7.jar src/"+jsonInput.name+".java"); // compile the java file into class file
         p.waitFor();
         inputFileOutputStream.write(jsonInput.information.getBytes());
@@ -149,7 +148,7 @@ public class WorkerMain {
     public void execute() throws InterruptedException, IOException{
         Process e = runtime.exec("java -cp gson-2.7.jar;src "+jsonInput.name.replace("/", ".")); // run the class file
         e.waitFor();
-        System.out.println("finished executing the class file");
+        print("finished executing the class file");
     }
 
     /**
@@ -160,11 +159,9 @@ public class WorkerMain {
         while(answerFileScanner.hasNext()){
             str +=answerFileScanner.next();
         }
-        System.out.println("the answer is "+str);
-
         printStream.println(str);
         printStream.flush();
-        System.out.println("sended the answer to the master");
+        print("the answer is "+str);
     }
 
     /**
@@ -187,6 +184,10 @@ public class WorkerMain {
         socket.close();
     }
 
+    /**
+     * a reset function which after it the worker can still work, he begins its work again
+     * @throws IOException
+     */
     public void continuationDestructor() throws IOException{
         printStream.println("kill");
         printStream.flush();
@@ -207,18 +208,23 @@ public class WorkerMain {
             catchMasterIp();
             establishTcpIpCommunications();
             while (waitForInput()) {
-                System.out.println("started the loop");
+                print("started the loop");
                 writeInput();
-                System.out.println("wrote the input");
+                print("wrote the input");
                 execute();
-                System.out.println("finish executing");
+                print("finish executing");
                 returnAnswer();
-                System.out.println("returned the output");
+                print("returned the output");
             }
             continuationDestructor();
         }
         destructor();
-        System.out.println("worker is dead");
+        print("worker is dead");
+    }
+
+    public <T> void print(T str){
+        if(debbuging)
+            System.out.println(str.toString());
     }
 
 }

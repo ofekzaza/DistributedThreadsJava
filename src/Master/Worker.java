@@ -1,11 +1,16 @@
 package Master;
 
 import GsonInformation.Gsons;
-
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
+
+/**
+ * @class Worker
+ * For every connected worker, the master have an instance of this class.
+ * A basic buffer of the communication with the worker
+ */
 
 public class Worker{
     private Socket socket;
@@ -38,7 +43,6 @@ public class Worker{
     }
 
     /**
-     *
      * @return the answer of the worker to the master
      */
     public String getInput() throws IOException{

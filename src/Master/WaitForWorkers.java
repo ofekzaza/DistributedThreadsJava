@@ -34,7 +34,6 @@ public class WaitForWorkers extends Thread{
             }
         }
         died = true;
-        System.out.println("wait for workers is dead!!!!!");
     }
 
 

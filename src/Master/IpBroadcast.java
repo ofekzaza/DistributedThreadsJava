@@ -58,8 +58,9 @@ public class IpBroadcast extends Thread{
     }
 
     public void waitForBroadcast(){
-        while(!broadcast) {;}
+        while(!broadcast) {}
     }
+
 
     public void kill(){
         working = false;

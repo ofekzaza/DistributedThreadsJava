@@ -36,7 +36,6 @@ public class DistributedFunction {
             while (scanner.hasNextLine()) {
                 input += scanner.nextLine();
             }
-            System.out.println("input:" + input);
             inputGson = Gsons.JSON_CACHE_PARSER_BASIC.fromJson(input);
             scanner.close();
             inputStream.close();

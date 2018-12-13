@@ -54,7 +54,6 @@ public final class MasterSocket extends Thread {
         workersMap = new HashMap<>();
         dependenciesQ = new LinkedList<>();
         recivingMaster = new WaitForWorkers(serverSocket, port);
-        System.out.println("Good at least");
     }
 
     public static MasterSocket init() {
@@ -137,7 +136,6 @@ public final class MasterSocket extends Thread {
      * @throws IOException
      */
     public String readFile(String name) throws IOException{
-        System.out.println(name);
         if(name.length() < "/.java".length()+1)
             return "";
         String fileString = "";
