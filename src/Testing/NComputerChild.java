@@ -29,7 +29,7 @@ public class NComputerChild extends MasterDThread {
         String[] sources = {""};
         String[] dependencies = {""};
 
-        final long end = 1000000; //range of the test
+        final long end = 100000000; //range of the test
         final short computers = 2;
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -70,7 +70,7 @@ public class NComputerChild extends MasterDThread {
     @Override
     public void start(){
         if(master == null){
-            master = new MasterDThread(this, CloseType.PreForNext, fileList);
+            master = new MasterDThread(this, CloseType.Kill, fileList);
             master.start();
         }
     }
