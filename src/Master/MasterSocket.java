@@ -196,7 +196,7 @@ public final class MasterSocket extends Thread {
         }
         while (!got) {
             for (int i = 0; i < workers.size(); i++) {
-                if (!workers.get(i).isActive()) {
+                if (workers.get(i) != null && !workers.get(i).isActive()) {
                     lastBusy = i;
                     return workers.get(i);
                 }

@@ -29,7 +29,7 @@ public class WorkerMain {
     private Gson gson;
     private Runtime runtime;
     private boolean working;
-    private boolean debbuging = false;
+    private boolean debbuging = true;
 
     public static void main(String[] args) throws IOException, InterruptedException {
         WorkerMain worker = new WorkerMain();

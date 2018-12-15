@@ -35,6 +35,7 @@ public class NComputerChild extends MasterDThread {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] messageDigest = md.digest(String.valueOf(end - 1).getBytes());
             for(int  i = 0; i < computers; i++) { // execute the program in a generic number of computers
+                System.out.println(i);
                 long start = i * end / computers;
                 Gsons.SHA256 sha256 = new Gsons.SHA256(start, start + end / computers, messageDigest);
                 master.execute("Sha256"+i, "Distributed/Sha256Test", sources, dependencies, Gsons.gson.toJson(sha256));
@@ -52,8 +53,10 @@ public class NComputerChild extends MasterDThread {
         //System.out.println("answer is: "+master.getAnswer("Distributed/Sha256Test"));
         for(int i = 0; i < computers; i++){
             String ans = master.getAnswer("Sha256"+i);
-            if(ans != "-1" && ans != "")
+            if(ans != "-1" && ans != "") {
                 System.out.println("The Answer is " + ans);
+                System.out.println(i);
+            }
         }
         //getting the ending time
         final long endTime = System.currentTimeMillis();
@@ -61,12 +64,13 @@ public class NComputerChild extends MasterDThread {
 
         //printing the time which the algorithem took
         System.out.println("To run the program its took min: " + (long)(time/1000/60) + ", sec: " + (long)(time/1000)%60 + ", milisec: " + (time % (60 * 1000)) % 1000);
+        System.out.println("Total second: " + time /1000 + "." + time %1000);
     }
 
     @Override
     public void start(){
         if(master == null){
-            master = new MasterDThread(this, CloseType.Kill, fileList);
+            master = new MasterDThread(this, CloseType.PreForNext, fileList);
             master.start();
         }
     }

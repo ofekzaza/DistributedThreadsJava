@@ -50,8 +50,6 @@ public class Worker{
             String str = scan.nextLine();
             if(str == "kill"){
                 close(CloseType.Kill);
-                answer = null;
-                active = false;
             }
             if(checkAnswer(str)){
                 active = false;
