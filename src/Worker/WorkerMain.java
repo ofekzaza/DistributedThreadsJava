@@ -210,7 +210,7 @@ public class WorkerMain {
             while (waitForInput()) {
                 print("started the loop");
                 writeInput();
-                print("wrote the input");
+                print("wrote the input the input not the result");
                 execute();
                 print("finish executing");
                 returnAnswer();

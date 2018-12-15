@@ -1,6 +1,10 @@
 package Master;
 
+
 import GsonInformation.Gsons;
+import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -14,6 +18,30 @@ import java.util.Scanner;
  * singalton responsible from communication with the workers
  */
 public final class MasterSocket extends Thread {
+
+    /**
+     * @param thread the singleton is a thread
+     * @param name the name of the thread
+     * @param MasterSocket self
+     * @param serverSocket the server socket of the master, using tcp to communicate with the workers
+     * @param port the port of the program
+     * @param working says if the masterSocket should work
+     * @param sockets storage of the sockets which connects the workers
+     * @param workers an arraylist of the workers supervisors class
+     * @param locationQ a stack of the file locations of the Distributed code files
+     * @param inputQ the input for the code file
+     * @param dependenciesQ the dep of the code file
+     * @param sourcesQ the sources of the dependencies
+     * @param recivingMaster a thread which is waiting for workers to connect to the master
+     * @param scanner a scanner for reading files // not neccery you can change it in order to make the program run faster a little
+     * @param connection if have a connection with at least one workers
+     * @param lastBusy number which say which workers is the last one who got a job
+     * @param workerMap a map of the workers with the name of the algoritem which run on them
+     * @param fileReader a FileInputStream for reading files
+     * @param closeType the closing type of the workers
+     * @param dependenciesFiles something which related to the dependencies of the worker
+     */
+
     private Thread thread;
     private String name = "MasterSocket";
     private final static MasterSocket instance = new MasterSocket();
@@ -22,11 +50,11 @@ public final class MasterSocket extends Thread {
     private boolean working;
     public ArrayList<Socket> sockets;
     private ArrayList<Worker> workers;
-    public static String[] JsonNames = {"Ints", "Doubles", "Booleans", "Strings"};
-    private LinkedList<String> nameQ;
+    private LinkedList<String> locationQ;
     private LinkedList<String[]> inputQ;
     private LinkedList<String[]> dependenciesQ;
     private LinkedList<String[]> sourcesQ;
+    private LinkedList<String> nameQ;
     private WaitForWorkers recivingMaster;
     private Scanner scanner;
     private boolean connection;
@@ -49,6 +77,7 @@ public final class MasterSocket extends Thread {
         sockets = new ArrayList<Socket>();
         workers = new ArrayList<Worker>();
         nameQ = new LinkedList<>();
+        locationQ = new LinkedList<>();
         inputQ = new LinkedList<>();
         sourcesQ = new LinkedList<>();
         workersMap = new HashMap<>();
@@ -76,14 +105,14 @@ public final class MasterSocket extends Thread {
 
             while (working) {
 
-                if (nameQ.size() > 0) {
-                    String code = readFile( "src/"+nameQ.peek() + ".java"); // read the code
+                if (locationQ.size() > 0) {
+                    String code = readFile( "src/"+locationQ.peek() + ".java"); // read the code
 
                     readFiles();
 
                     //gives the packet to the worker
                     workersMap.put(nameQ.peek(), getFreeWorker());
-                    workersMap.get(nameQ.peek()).send(new Gsons.Packet(true, code, nameQ.pop(), getInput(inputQ.pop()), sourcesQ.pop(), dependenciesQ.pop(), dependenciesFiles));
+                    workersMap.get(nameQ.peek()).send(new Gsons.Packet(true, code, locationQ.pop(), getInput(inputQ.pop()), sourcesQ.pop(), dependenciesQ.pop(), dependenciesFiles));
                     scanner.close();
                     fileReader.close();
                 }
@@ -135,7 +164,7 @@ public final class MasterSocket extends Thread {
      * @return a string of the input of the file, tested with java files, does not works with text normally
      * @throws IOException
      */
-    public String readFile(String name) throws IOException{
+    public String readFile(@NotNull String name) throws IOException{
         if(name.length() < "/.java".length()+1)
             return "";
         String fileString = "";
@@ -181,16 +210,16 @@ public final class MasterSocket extends Thread {
      */
     public void waitForResults() {
         String a ="";
-        boolean True = true;
+        boolean wait = true;
         boolean check = false;
-        while(True){
+        while(wait){
             check = true;
             for(int i = 0; i < workers.size(); i++){
                 if(!workers.get(i).isActive())
                     check = false;
             }
             if(check)
-                break;
+                wait = false;
         }
     }
 
@@ -220,6 +249,7 @@ public final class MasterSocket extends Thread {
      * @param socket   the connection with the worker
      * @throws IOException
      */
+    @PrivateUse
     public void addWorker(Socket socket) throws IOException{
         sockets.add(socket);
         workers.add(new Worker(sockets.size()-1, sockets.get(sockets.size()-1)));
@@ -227,12 +257,14 @@ public final class MasterSocket extends Thread {
 
     /**
      * send a mission to the worker
-     * @param name the name of the java code file
+     * @param name the name of the call
+     * @param location the name of the java code file
      * @param dependencies of the file, if it is both on the master and on the worker in src file put "" otherwise dont use!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      * @param params string params to the code
      */
-    public void giveMission(String name,String[] sources, String[] dependencies, String... params){
+    public void giveMission(String name, String location,String[] sources, String[] dependencies, String... params){
         nameQ.push(name);
+        locationQ.push(location);
         dependenciesQ.push(dependencies);
         inputQ.push(params);
         sourcesQ.push(sources);

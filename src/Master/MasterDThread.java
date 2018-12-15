@@ -75,13 +75,14 @@ public class MasterDThread <T extends MasterDThread>{
 
     /**
      * make a worker executes the java file name
-     * @param name the java code file including the package
+     * @param name the name of the execution
+     * @param location the java code file including the package
      * @param dependencies the dependencies of the code include the packages (only java files) (Package/File)
      * @param sources the sources of the dependencies (source dir for example src)
      * @param params the input of the code
      */
-    public void execute(String name, String[] sources, String[] dependencies, String... params){
-        masterSocket.giveMission(name, sources, dependencies, params);
+    public void execute(String name, String location, String[] sources, String[] dependencies, String... params){
+        masterSocket.giveMission(name, location, sources, dependencies, params);
     }
 
     /**
