@@ -23,6 +23,7 @@ public class NComputerChild extends MasterDThread {
     @Override
     public void run(){
         // getting the time for the test
+
         final long startTime = System.currentTimeMillis();
 
         //setting the val
@@ -30,7 +31,7 @@ public class NComputerChild extends MasterDThread {
         String[] dependencies = {""};
 
         final long end = 100000000; //range of the test
-        final short computers = 2;
+        final short computers = 6;
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] messageDigest = md.digest(String.valueOf(end - 1).getBytes());

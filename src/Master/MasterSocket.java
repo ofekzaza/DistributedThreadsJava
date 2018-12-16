@@ -212,12 +212,18 @@ public final class MasterSocket extends Thread {
         String a ="";
         boolean wait = true;
         boolean check = false;
+        int countNull = 0;
         while(wait){
             check = true;
+            countNull = 0;
             for(int i = 0; i < workers.size(); i++){
-                if(!workers.get(i).isActive())
+                if(workers == null)
+                    countNull ++;
+                if(workers != null && !workers.get(i).isActive())
                     check = false;
             }
+            if(countNull == workers.size())
+                wait = true;
             if(check)
                 wait = false;
         }
