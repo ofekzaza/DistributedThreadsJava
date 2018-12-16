@@ -51,7 +51,6 @@ public class NComputerChild extends MasterDThread {
         master.waitForResults();
 
         //printing the result
-        //System.out.println("answer is: "+master.getAnswer("Distributed/Sha256Test"));
         for(int i = 0; i < computers; i++){
             String ans = master.getAnswer("Sha256"+i);
             if(ans != "-1" && ans != "") {

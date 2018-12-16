@@ -2,6 +2,7 @@ package Master;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 
 public class WaitForWorkers extends Thread{
     private Thread thread;
@@ -26,9 +27,12 @@ public class WaitForWorkers extends Thread{
      */
     @Override
     public void run(){
+        Socket socket;
         while(working) {
             try {
-                MasterSocket.init().addWorker(serverSocket.accept());
+                socket = serverSocket.accept(); // less bugs this way
+                if(socket != null)
+                    MasterSocket.init().addWorker(socket);
             }catch (IOException x){
                 x.printStackTrace();
             }
