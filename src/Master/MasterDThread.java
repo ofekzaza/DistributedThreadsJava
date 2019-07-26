@@ -82,7 +82,7 @@ public class MasterDThread <T extends MasterDThread>{
      * @param params the input of the code
      */
     public void execute(String name, String location, String[] sources, String[] dependencies, String... params){
-        System.out.println("location in master d - " +location);
+        //System.out.println("location in master d - " +location);
         masterSocket.giveMission(name, location, sources, dependencies, params);
     }
 
@@ -106,12 +106,12 @@ public class MasterDThread <T extends MasterDThread>{
      */
     public void start(){
         startBroadcast();
-        System.out.println("broadcast");
+        //System.out.println("broadcast");
         startTcpWorkerConnection();
-        System.out.println("tcp");
+        //System.out.println("tcp");
         child.run();
-        System.out.println("run");
+       // System.out.println("run");
         close(closeType);
-        System.out.println("death");
+      //  System.out.println("death");
     }
 }

@@ -10,7 +10,6 @@ public class Example extends MasterDThread {
     public static void main(String[] args){
         Example example = new Example();
         example.start();
-        System.out.println("well");
     }
 
     @Override
@@ -29,9 +28,7 @@ public class Example extends MasterDThread {
     @Override
     public void start(){
         if(masterDThread == null){
-            System.out.println("start");
             masterDThread = new MasterDThread(this, CloseType.Kill);
-            System.out.println("master exist");
             masterDThread.start();
         }
     }

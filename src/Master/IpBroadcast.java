@@ -25,11 +25,11 @@ public class IpBroadcast extends Thread{
     public void run() {
         try {
              // the socket will broadcast, truly impressive
-            System.out.println("have broadcast socket");
+           // System.out.println("have broadcast socket");
             byte[] buffer = selfIp.getBytes();
 
 
-            System.out.println("starting to broadcasting");
+            //System.out.println("starting to broadcasting");
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName("255.255.255.255"), 1861);
 
 

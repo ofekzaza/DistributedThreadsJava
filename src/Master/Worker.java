@@ -39,10 +39,10 @@ public class Worker{
     public void send(Gsons.Packet packet) throws IOException{
         active = true;
         name = packet.name;
-        System.out.println("well wtf i am sending?!?!?!?!");
+       // System.out.println("well wtf i am sending?!?!?!?!");
         printSteam.println(Gsons.gson.toJson(packet));
         printSteam.flush();
-        System.out.println(Gsons.gson.toJson(packet));
+      //  System.out.println(Gsons.gson.toJson(packet));
     }
 
     /**

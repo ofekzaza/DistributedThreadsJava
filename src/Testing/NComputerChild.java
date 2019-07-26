@@ -30,8 +30,8 @@ public class NComputerChild extends MasterDThread {
         String[] sources = {""};
         String[] dependencies = {""};
 
-        final long end = 100000000; //range of the test
-        final short computers = 6;
+        final long end = 100000; //range of the test
+        final short computers = 2;
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] messageDigest = md.digest(String.valueOf(end - 1).getBytes());
