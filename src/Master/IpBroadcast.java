@@ -24,18 +24,12 @@ public class IpBroadcast extends Thread{
     @Override
     public void run() {
         try {
-            selfIp = Inet4Address.getLocalHost().getHostAddress();
-        } catch (Exception x) {
-            x.printStackTrace(); /// wellll what the fuck you done?!?!?!??!?
-        }
-        try {
-            socket = new DatagramSocket();
-            socket.setBroadcast(true); // the socket will broadcast, truly impressive
-
+             // the socket will broadcast, truly impressive
+            System.out.println("have broadcast socket");
             byte[] buffer = selfIp.getBytes();
 
-            broadcast = true;
 
+            System.out.println("starting to broadcasting");
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName("255.255.255.255"), 1861);
 
 
@@ -53,7 +47,15 @@ public class IpBroadcast extends Thread{
     public void start(){
         if(thread == null){
             thread = new Thread(this, "Ipbroadcast");
+            try { // init of broadcast socket
+                selfIp = Inet4Address.getLocalHost().getHostAddress();
+                socket = new DatagramSocket();
+                socket.setBroadcast(true);
+            } catch (Exception x) {
+                x.printStackTrace(); /// wellll what the fuck you done?!?!?!??!?
+            }
             thread.start();
+
         }
     }
 

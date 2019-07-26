@@ -58,7 +58,9 @@ public class WaitForWorkers extends Thread{
 
     @Override
     public void start(){
-        thread = new Thread(this, name);
-        thread.start();
+        if(thread == null) {
+            thread = new Thread(this, name);
+            thread.start();
+        }
     }
 }

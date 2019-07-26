@@ -42,7 +42,7 @@ public class MasterDThread <T extends MasterDThread>{
     private void startBroadcast(){
         broadcast = new IpBroadcast(broadcastPort);
         broadcast.start();
-        broadcast.waitForBroadcast();
+        //broadcast.waitForBroadcast(); no need for this function any longer
     }
 
     /**
@@ -82,6 +82,7 @@ public class MasterDThread <T extends MasterDThread>{
      * @param params the input of the code
      */
     public void execute(String name, String location, String[] sources, String[] dependencies, String... params){
+        System.out.println("location in master d - " +location);
         masterSocket.giveMission(name, location, sources, dependencies, params);
     }
 
@@ -105,8 +106,12 @@ public class MasterDThread <T extends MasterDThread>{
      */
     public void start(){
         startBroadcast();
+        System.out.println("broadcast");
         startTcpWorkerConnection();
+        System.out.println("tcp");
         child.run();
+        System.out.println("run");
         close(closeType);
+        System.out.println("death");
     }
 }

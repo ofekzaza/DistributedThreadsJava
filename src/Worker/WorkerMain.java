@@ -18,7 +18,7 @@ public class WorkerMain {
     private Socket socket;
     private Scanner scanSocket;
     private PrintStream printStream;
-    private final int port = 1948;
+    private final int port = 9001;
     private FileOutputStream classFileOutputStream;
     private FileOutputStream inputFileOutputStream;
     private FileInputStream answerFileInputStream;
@@ -92,9 +92,18 @@ public class WorkerMain {
     public boolean waitForInput() throws IOException{
         String str = "";
 
-        while(!scanSocket.hasNext()){ }
+        while(!scanSocket.hasNext()){
+            System.out.println("waiting");
+        }
 
         str += scanSocket.nextLine();
+//        System.out.println("after while");
+//        while(scanSocket.hasNext()) {
+//            str += scanSocket.next() +" ";
+//            System.out.println("wtf reading input" +str);
+//        }
+        System.out.println(str);
+        System.out.println("have input");
 
         jsonInput = Gsons.JSON_CACHE_PARSER_PACKET.fromJson(str);
 
@@ -207,6 +216,7 @@ public class WorkerMain {
         while(working) {
             catchMasterIp();
             establishTcpIpCommunications();
+            System.out.println("while");
             while (waitForInput()) {
                 print("started the loop");
                 writeInput();

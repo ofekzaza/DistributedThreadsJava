@@ -46,7 +46,7 @@ public final class MasterSocket extends Thread {
     private String name = "MasterSocket";
     private final static MasterSocket instance = new MasterSocket();
     private ServerSocket serverSocket;
-    private final int port = 1948; // dont change
+    private final int port = 9001; // dont change
     private boolean working;
     public ArrayList<Socket> sockets;
     private ArrayList<Worker> workers;
@@ -96,23 +96,38 @@ public final class MasterSocket extends Thread {
     public void run() {
         try {
             //wait to get the first connection
+            System.out.println("waiting for the worker");
             sockets.add(serverSocket.accept());
+            System.out.println("got a bloody worker");
+            System.out.println(sockets.size());
             workers.add(new Worker(sockets.size() - 1, sockets.get(sockets.size() - 1)));
+            System.out.println(sockets.size());
             connection = true;
-
             //start another thread to listen to connections
             recivingMaster.start();
-
+            System.out.println("working - " + working +", location q - " + locationQ.peek());
+            while (locationQ.size() == 0){
+                try{
+                    thread.sleep(10);
+                }catch (Exception e){}
+            }
+            System.out.println("i am working! for g and location "+locationQ.peek()+ "size"+locationQ.size());
             while (working) {
-
+                try{
+                    thread.sleep(10);
+                }catch (Exception e){}
                 if (locationQ.size() > 0) {
+                    System.out.println("start  to reading files");
                     String code = readFile( "src/"+locationQ.peek() + ".java"); // read the code
-
+                    System.out.println("reading files");
                     readFiles();
 
                     //gives the packet to the worker
+                    System.out.println("getting the worker");
                     workersMap.put(nameQ.peek(), getFreeWorker());
+                    System.out.println(workersMap.get(nameQ.peek()) + "have free worker");
                     workersMap.get(nameQ.peek()).send(new Gsons.Packet(true, code, locationQ.pop(), getInput(inputQ.pop()), sourcesQ.pop(), dependenciesQ.pop(), dependenciesFiles));
+                    System.out.println("sended the information");
                     scanner.close();
                     fileReader.close();
                 }
@@ -180,6 +195,10 @@ public final class MasterSocket extends Thread {
      */
     public void waitForConnection() {
         while (!connection) {
+            try {
+                Thread.sleep(100);
+            }
+            catch (Exception e){}
         }
     }
 
@@ -271,6 +290,7 @@ public final class MasterSocket extends Thread {
     public void giveMission(String name, String location,String[] sources, String[] dependencies, String... params){
         nameQ.push(name);
         locationQ.push(location);
+        System.out.println("location in master socket - " +locationQ.peek());
         dependenciesQ.push(dependencies);
         inputQ.push(params);
         sourcesQ.push(sources);

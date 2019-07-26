@@ -27,6 +27,7 @@ public class Worker{
         active = false;
         this.id = id;
         this.name = "Worker"+id;
+        this.socket = socket;
         printSteam = new PrintStream(socket.getOutputStream());
         scan = new Scanner(socket.getInputStream());
     }
@@ -35,11 +36,13 @@ public class Worker{
      * send message to the worker
      * @param packet the url of the jar file
      */
-    public void send(Gsons.Packet packet){
+    public void send(Gsons.Packet packet) throws IOException{
         active = true;
         name = packet.name;
+        System.out.println("well wtf i am sending?!?!?!?!");
         printSteam.println(Gsons.gson.toJson(packet));
         printSteam.flush();
+        System.out.println(Gsons.gson.toJson(packet));
     }
 
     /**
